@@ -17,11 +17,12 @@ const { cartRouter } = require('./routes/cartRoute.js');
 const app = express();
 app.use(cors());
 app.use(helmet());
+const pgSession = require('connect-pg-simple')(session);
 const { PORT } =require('./config');
 const port = PORT || 3001;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const pgSession = require('connect-og-simple')(session);
+
 
 const options = {
     user: DB.DB_USER, 
@@ -32,6 +33,8 @@ const options = {
     createDatabaseTable: true,
     createTableIfMissing: true
 };
+
+console.log(options);
 
 const sessionStore = new pgSession(options);
 

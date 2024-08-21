@@ -1,6 +1,6 @@
 require('dotenv').config();
 const pool = require('./index');
-const bcrypt = reqiure('bcrypt');
+const bcrypt = require('bcrypt');
 
 class Queries {
     constructor(schema) {
@@ -8,23 +8,33 @@ class Queries {
     }
 
     async registerUser() {
-        const {hashedPassword, email, first_name, last_name } = this.schema.userDetails;
+        const { hashedPassword, email, first_name, last_name } = this.schema.userDetails;
 
-        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if(!emailRegex.test(email)) {
-            return { error: true, message: 'Invalid email format at DB checks'};
+        console.log(hashedPassword, email, first_name, last_name)
+
+        // Input validation
+        if (!hashedPassword || !email || !first_name || !last_name) {
+            return { error: true, message: "All fields are required - failed at db.queries." };
+        }
+
+        const emailRegex =  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (!emailRegex.test(email)) {
+            return { error: true, message: "Invalid email format at DB checks" };
         }
 
         try {
             const user = await pool.query(
-                `INSERT INTO "user" ("Password", "Email", "first_name", "last_name") VALUES($1, $2, $3, $4) RETURNING "id"`, 
+                `INSERT INTO "user" ("Password", "Email", "first_name", "last_name") VALUES($1, $2, $3, $4) RETURNING "id"`,
                 [hashedPassword, email, first_name, last_name]
             );
+
+
+
             return { error: false, data: user.rows[0] };
         } catch (err) {
-            return { error: true, message: "A problem occured. Please try a different username and/or password" };
+            return { error: true, message: "A problem occurred. Please try a different username and/or password" };
         }
-    };
+    }
 
     async getAllFromSchema() {
         try {
@@ -50,7 +60,7 @@ class Queries {
 
     async getFromSchemaByName() {
         try {
-            const query = `SELECT * FROM products WHERE name =£1`;
+            const query = `SELECT * FROM products WHERE name =$1`;
             const products = await pool.query(query, [this.schema.product]);
 
             return { error: false, data: products.rows };

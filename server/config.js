@@ -17,3 +17,5 @@ module.exports = {
         SS_SESS_NAME: process.env.SESS_NAME   
     }
 };
+
+console.log("config.js reads " + process.env.DB_USER)

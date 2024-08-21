@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import styles from '../publicRoutes/registration.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import { Formik, Form, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-// import { registerUser, registerData, registerLoading, registerError } from '../../reduxStore/authSlice';
+import { registerUser, registerData, registering, registerError } from '../../reduxStore/authSlice';
 
 const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -21,32 +21,35 @@ const validationSchema = Yup.object().shape({
 
 
 function Registration() {
-
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     
-
     const handlePassVisibility = () => {
         setShowPassword(!showPassword)
     }
 
     const onSubmit = async (values, actions) => {
-        console.log(values);
-        console.log(actions);
-
-        const data = {
+        const credentials = {
             password: values.password,
             email: values.email, 
             first_name: values.firstName, 
             last_name: values.lastName,
         };
 
-        console.log(data);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        actions.resetForm()
+        console.log(credentials);
+        try {
+            const register = await dispatch(registerUser(credentials));
+            console.log(register)
+            
+            navigate('/');
+            
+        } catch (err) {
+            console.error(err);
+        }
         
+        actions.resetForm()
     }
-
-
 
     return (
         <Grid className={styles.registration}>
@@ -115,7 +118,6 @@ function Registration() {
                         </Form>
                     )}
                 </Formik>
-
             </Paper>
         </Grid >
     );
@@ -123,4 +125,4 @@ function Registration() {
 
 export default Registration;
 
-
+//await new Promise((resolve) => setTimeout(resolve, 5000));

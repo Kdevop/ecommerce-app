@@ -76,6 +76,12 @@ function Header() {
         zIndex: isOpenCart ? 1000 : -1000
     };
 
+    useEffect(() => {
+        setIsOpenAcc(false);
+        setIsOpenCart(false);
+        setIsOpenCat(false);
+    }, [location.pathname]);
+
 
     return (
         <div>

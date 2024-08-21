@@ -8,42 +8,46 @@ const userQueries = new Queries(userQuerySchema);
 const ordersQueries = new Queries(ordersQuerySchema);
 
 const registerUser = async (req, res) => {
+    
     const validateEmail = (email) => {
         const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         return re.test(String(email).toLowerCase());
     };
 
     const { password, email, first_name, last_name } = req.body;
+    
+    console.log(password, email, first_name, last_name);
+    
 
-    //email validation check
-    if(!validateEmail(email)) {
-        return res.status(400).json({ success: false, message: 'Invalid email format at controllers check'});
+    if (!validateEmail(email)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format at controllers checks' });
     }
 
-    //check for missing fields
-    if(!password || !email || !first_name || !last_name) {
-        return res.status(400).json({ success: false, message: 'All fields are required - failed at controllers'});
+    //Input validation
+    if (!password || !email || !first_name || !last_name) {
+        return res.status(400).json({ success: false, message: 'All fields are required - failed at user.js' });
     }
 
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
-        const userDetails = { hashedPassword, email, first_name, last_name};
-
+        const userDetails = { hashedPassword, email, first_name, last_name };
+        
         const registerQuerySchema = { name: 'register', userDetails };
         const registerQueries = new Queries(registerQuerySchema);
 
         const data = await registerQueries.registerUser(userDetails);
 
-        if(!data.error) {
+        if (!data.error) {
             req.session.user = data.data;
             req.session.authenticated = true;
-            res.status(200).json({ sucess: true, message: 'You are successfully registered!' });
+            res.status(200).json({ success: true, message: 'You are successfully registered!' });
         } else {
             res.status(400).json({ success: false, message: data.message });
+            
         }
     } catch (error) {
-        res.status(500).json({ success: false, message: 'An error occured during registration.' });
+        res.status(500).json({ success: false, message: 'An error occurred during registration.' });
     }
 };
 
