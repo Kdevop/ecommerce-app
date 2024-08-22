@@ -17,4 +17,16 @@ export const register = async (credentials) => {
 
     const json = await response.json();
     return json;
+};
+
+export const productInit = async () => {
+    const response = await fetch (`${API_ROOT}/products`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application.json'
+        }
+    });
+
+    const json = await response.json();
+    return json;
 }
