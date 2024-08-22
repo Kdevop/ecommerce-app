@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styles from '../publicRoutes/registration.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import { Formik, Form, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -115,6 +115,9 @@ function Registration() {
                                     <CircularProgress />
                                 </div>
                             )}
+                            <div>
+                                <Typography>Already have an account? Click here to <NavLink to='/signin'>Sign in!</NavLink></Typography>
+                            </div>
                         </Form>
                     )}
                 </Formik>

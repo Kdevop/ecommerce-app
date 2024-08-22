@@ -10,6 +10,7 @@ import Checkout from './pages/privateRoutes/checkout';
 import Orders from './pages/privateRoutes/orders';
 import OrderDetails from './pages/privateRoutes/orderDetails';
 
+
 const appRouter=createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<Root />}>
     {/* Public Routes */}
@@ -17,6 +18,7 @@ const appRouter=createBrowserRouter(createRoutesFromElements(
     <Route path='/login' element={<Login />} />
     <Route path='/products/:productId' element={<ProductDetails />} />
     <Route path='/register' element={<Registration />} />
+    <Route path='/signin' element={<Login />} />
 
     {/* Private Routes */}
     <Route exact path='/account' element={<Account />} />
