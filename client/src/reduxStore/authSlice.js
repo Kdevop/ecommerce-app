@@ -49,5 +49,3 @@ export const registerData = state => state.auth.data;
 export const registering = state => state.auth.isRegistering;
 export const registerError = state => state.auth.error;
  
-
-
