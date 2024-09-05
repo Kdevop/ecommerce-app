@@ -24,7 +24,7 @@ class Queries {
 
         try {
             const user = await pool.query(
-                `INSERT INTO "user" ("Password", "Email", "first_name", "last_name") VALUES($1, $2, $3, $4) RETURNING "id"`,
+                `INSERT INTO "user_customer" ("password", "email", "first_name", "last_name") VALUES($1, $2, $3, $4) RETURNING "id"`,
                 [hashedPassword, email, first_name, last_name]
             );
 
@@ -38,7 +38,7 @@ class Queries {
 
     async getAllFromSchema() {
         try {
-            const query = `SELECT * From ${this.schema.name}`;
+            const query = `SELECT * FROM ${this.schema.name}`;
             const products = await pool.query(query);
             return { error: false, data: products.rows };
         } catch (error) {

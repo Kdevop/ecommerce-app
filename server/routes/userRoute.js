@@ -8,12 +8,23 @@ registerRouter.post('/', registerUser);
 
 //end point for signin
 const signinRouter = express.Router();
-signinRouter.post('/', 
-    passport.authenticate('local', { failureRedirect: '/api/users/signin' }),
-    (req, res) => {
-        res.status(200).redirect('../');
-    }
-);
+signinRouter.post('/', (req, res, next) => {
+    passport.authenticate('local', async (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+    
+        if (!user) {
+            return res.status(401).json ({ message: info.message, check: 'this is the error I am getting today' });
+        }
+        req.login(user, (loginErr) => {
+            if (loginErr) {
+                return res.status(500).json({ error: 'Login Error' });
+            }
+            return res.status(200).json({ user });
+        });
+    }) (req, res, next);
+});
 
 //end point for logging out
 const logoutRouter = express.Router();
@@ -60,3 +71,10 @@ module.exports = {
     userRouter
 };
 
+// const signinRouter = express.Router();
+// signinRouter.post('/', 
+//     passport.authenticate('local', { failureRedirect: '/api/users/signin' }),
+//     (req, res) => {
+//         res.status(200).redirect('/');
+//     }
+// );

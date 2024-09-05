@@ -6,7 +6,7 @@ const initializePassport = require('./controllers/auth.js');
 const helmet = require('helmet');
 const cors = require('cors');
 const session = require('express-session');
-const { DB, SS} =require('./config');
+const { DB, SS } =require('./config');
 
 //route imports
 const { registerRouter, signinRouter, logoutRouter, orderRouter, userRouter } = require('./routes/userRoute.js');
@@ -15,6 +15,12 @@ const { cartRouter } = require('./routes/cartRoute.js');
 
 //server setup
 const app = express();
+
+// Used for testing to make sure server / express app is running.
+app.get('/', (req, res, next) => {
+    res.send('<h1>Hello Kiernan</h1>');
+});
+
 app.use(cors());
 app.use(helmet());
 const pgSession = require('connect-pg-simple')(session);
@@ -34,7 +40,7 @@ const options = {
     createTableIfMissing: true
 };
 
-console.log(options);
+console.log(options); //After testing this line can be deleted.
 
 const sessionStore = new pgSession(options);
 
@@ -47,7 +53,7 @@ app.use(session({
     cookie: {
         maxAge: Number(SS.SS_SESS_LIFETIME),
         sameSite: true, 
-        secure: false,
+        secure: false, //change to true once in build? Will only set a cookie if the browser is https - we can enforce this in the build?
     } 
 }));
 

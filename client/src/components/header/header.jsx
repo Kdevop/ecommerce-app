@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { useLocation } from 'react-router-dom';
+import { Paper } from '@mui/material';
 
 // styles, images and logos imports
 import styles from '../header/header.module.css';
@@ -95,23 +96,25 @@ function Header() {
                 </div>
             </div>
             <div className={styles.menu_container}>
-                <div style={openCat} className={styles.menu}>
+                <Paper elevation={5} style={openCat} className={styles.menu}>
+                    <h3>Categories</h3>
                     <ul className={styles.menu}>
-                        <li>Categories</li>
-                        <li>t-shirt</li>
-                        <li>shoes</li>
-                        <li>other thing cannot rememeber</li>
+                        <li>T-shirt</li>
+                        <li>Shoes</li>
+                        <li>Suits</li>
                     </ul>
-                </div>
-                <div style={openAcc} className={styles.menu}>
+                </Paper>
+                <Paper elevation={5} style={openAcc} className={styles.menu}>
+                    <h3>Account</h3>
                     <ul className={styles.register}>
                         <li><NavLink to ='/register'>Register</NavLink></li>
                         <li><NavLink to='/login'>Login</NavLink></li>
                     </ul>
-                </div>
-                <div style={openCart} className={styles.menu}>
+                </Paper>
+                <Paper elevation={5} style={openCart} className={styles.menu}>
+                    <h3>Cart</h3>
                     <Cart className={styles.menu} />
-                </div>
+                </Paper>
             </div>
         </div>
     );

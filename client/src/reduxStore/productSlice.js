@@ -9,7 +9,7 @@ export const getProducts = createAsyncThunk('products/getProducts', async (_, { 
             return rejectWithValue(response.message);
         }
 
-        console.log(response);
+        console.log(response); //this can be deleted once ready to build.
         return response.data;
     } catch (error) {
         console.error('Error getting products', error);

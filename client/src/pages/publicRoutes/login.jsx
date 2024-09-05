@@ -25,8 +25,9 @@ function Login() {
 
     const onSubmit = async (values, actions) => {
 
+        //object items in the credentials, should match the expected fields for the rwquest body in the the server paaport.auth.
         const credentials = {
-            email: values.email,
+            username: values.email,
             password: values.password,
         };
 
