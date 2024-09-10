@@ -19,6 +19,39 @@ export const register = async (credentials) => {
     return json;
 };
 
+export const signinUser = async (credentials) => {
+    const { username, password } = credentials;
+    const response = await fetch (`${API_ROOT}/users/signin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+            username, 
+            password
+        }),
+        
+    });
+
+    const json = await response.json();
+    return json;
+}
+
+export const logout = async () => {
+    const response = await fetch(`${API_ROOT}/users/logout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application.json',
+
+        },
+        credentials: 'include',
+    });
+    
+    const json = await response.json();
+    return json;
+}
+
 export const productInit = async () => {
     const response = await fetch (`${API_ROOT}/products`, {
         method: 'GET',

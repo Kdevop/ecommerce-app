@@ -2,25 +2,19 @@ const passport = require('passport'); //not sure if i need that here, I have my 
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 
-
-//const querySchema = { name: 'user', password: '', id: '', email: '', first_name: '', last_name: ''};
-
 const pool = require('../db/index');
-//const { query } = require('../db/index');
-
-//I think the issue here might be around the query set up. This does not look like the other queries you have set up!?
-//There is no query Schema set up for the sql databse, you have this for the other queries. Check this.
-
-
 
 module.exports = (passport) => {
+    const query = async (queryString, params) => {
+        return await pool.query(queryString, params);
+    };
+
     passport.use(
         new LocalStrategy ( async ( username, password, done) => {
             try {
                 const querySchema = { name: 'user', email: `${username}`};
-                const query = `SELECT * FROM user_customer WHERE email = $1`;
-
-                const userResult = await pool.query(query, [querySchema.email]);
+                const queryString = `SELECT * FROM user_customer WHERE email = $1`;
+                const userResult = await query(queryString, [querySchema.email]);
 
                 if (userResult.rows.length === 0 ) {
                     return done(null, false, { message: 'User not found' });
@@ -52,7 +46,7 @@ module.exports = (passport) => {
 
     passport.deserializeUser(async (id, done) => {
         try {
-            const userResult = await query('SELECT id, email, first_name, as "firstName", last_name AS "lastName" FROM user_customer WHERE id = $1',
+            const userResult = await query('SELECT * FROM user_customer WHERE id = $1',
                 [id]
             );
             if (userResult.rows.length === 0) {
@@ -63,3 +57,11 @@ module.exports = (passport) => {
         }
     });
 };
+
+module.exports.isAuth = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.status(401).json({ msg: 'You are not authorized to view this resource' });
+    }
+}

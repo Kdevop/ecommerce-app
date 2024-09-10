@@ -9,6 +9,7 @@ import Account from './pages/privateRoutes/userDetails';
 import Checkout from './pages/privateRoutes/checkout';
 import Orders from './pages/privateRoutes/orders';
 import OrderDetails from './pages/privateRoutes/orderDetails';
+import Logout from './components/logout/logout';
 
 
 const appRouter=createBrowserRouter(createRoutesFromElements(
@@ -18,7 +19,8 @@ const appRouter=createBrowserRouter(createRoutesFromElements(
     <Route path='/login' element={<Login />} />
     <Route path='/products/:productId' element={<ProductDetails />} />
     <Route path='/register' element={<Registration />} />
-    <Route path='/signin' element={<Login />} />
+    <Route path='/logout' element={<Logout />} /> 
+    {/* should the logout be a protected route? maybe. will have a think. */}
 
     {/* Private Routes */}
     <Route exact path='/account' element={<Account />} />

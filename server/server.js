@@ -21,7 +21,11 @@ app.get('/', (req, res, next) => {
     res.send('<h1>Hello Kiernan</h1>');
 });
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:3000",
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'DELETE', 'HEAD'],
+    credentials: true,
+}));
 app.use(helmet());
 const pgSession = require('connect-pg-simple')(session);
 const { PORT } =require('./config');
@@ -52,8 +56,11 @@ app.use(session({
     secret: SS.SS_SESS_SECRET,
     cookie: {
         maxAge: Number(SS.SS_SESS_LIFETIME),
-        sameSite: true, 
+        sameSite: 'lax', 
         secure: false, //change to true once in build? Will only set a cookie if the browser is https - we can enforce this in the build?
+        domain: "localhost",
+        httpOnly: true,
+        hostOnly: false,
     } 
 }));
 
@@ -61,6 +68,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 initializePassport(passport);
+
+//configuration to allow the front end to store cookies created on the server:
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Credentials", true); // allows cookie to be sent
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, HEAD, DELETE"); // you must specify the methods used with credentials. "*" will not work. 
+    next();
+});
 
 //route for users
 app.use('/api/users/register', registerRouter);

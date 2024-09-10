@@ -19,7 +19,7 @@ signinRouter.post('/', (req, res, next) => {
         }
         req.login(user, (loginErr) => {
             if (loginErr) {
-                return res.status(500).json({ error: 'Login Error' });
+                return res.status(500).json({ error: 'Login Error', msg: loginErr });
             }
             return res.status(200).json({ user });
         });
@@ -28,7 +28,7 @@ signinRouter.post('/', (req, res, next) => {
 
 //end point for logging out
 const logoutRouter = express.Router();
-logoutRouter.post('/', (req,res,next) => {
+logoutRouter.post('/', (req, res, next) => {
     req.logout((err) => {
         if(err) {
             return next(err);
@@ -41,9 +41,12 @@ logoutRouter.post('/', (req,res,next) => {
             }
         
             // clear the cookie
-            res.clearCookie('connect.id', { path: '/' });
+            res.clearCookie('ecommerce2024', { 
+                path: '/',
+                domain: 'localhost',
+             });
 
-            res.status(200).json({ message: 'Logged out' });
+            res.status(200).json({ success: true, message: 'Logged out' });
         });
     });
 });
@@ -71,10 +74,3 @@ module.exports = {
     userRouter
 };
 
-// const signinRouter = express.Router();
-// signinRouter.post('/', 
-//     passport.authenticate('local', { failureRedirect: '/api/users/signin' }),
-//     (req, res) => {
-//         res.status(200).redirect('/');
-//     }
-// );

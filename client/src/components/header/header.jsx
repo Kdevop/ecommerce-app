@@ -1,9 +1,9 @@
 // dependency imports
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import ReactDOM from 'react-dom';
-import { useLocation } from 'react-router-dom';
 import { Paper } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 // styles, images and logos imports
 import styles from '../header/header.module.css';
@@ -18,6 +18,8 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 // compoenent imports
 import SearchBar from '../search/search';
 import Cart from '../cart/cartCard';
+import { userAuthDone } from '../../reduxStore/authSlice';
+
 
 
 function Header() {
@@ -25,6 +27,8 @@ function Header() {
     const [isOpenCat, setIsOpenCat] = useState(false);
     const [isOpenAcc, setIsOpenAcc] = useState(false);
     const [isOpenCart, setIsOpenCart] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const isAuthenticated = useSelector(userAuthDone);
 
     const displayMenu = () => {
         if (isOpenAcc) {
@@ -83,6 +87,13 @@ function Header() {
         setIsOpenCat(false);
     }, [location.pathname]);
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [isAuthenticated]);
 
     return (
         <div>
@@ -106,10 +117,18 @@ function Header() {
                 </Paper>
                 <Paper elevation={5} style={openAcc} className={styles.menu}>
                     <h3>Account</h3>
-                    <ul className={styles.register}>
-                        <li><NavLink to ='/register'>Register</NavLink></li>
-                        <li><NavLink to='/login'>Login</NavLink></li>
+                    {!isLoggedIn ? (
+                        <ul className={styles.register}>
+                            <li><NavLink to='/register'>Register</NavLink></li>
+                            <li><NavLink to='/login'>Login</NavLink></li>
+                        </ul>
+                    ) : (
+                        <ul className={styles.register}>
+                        <li><NavLink to='/'>Some stuff to do with users!</NavLink></li>
+                        <li><NavLink to='/logout'>Logout</NavLink></li>
                     </ul>
+                    )}
+
                 </Paper>
                 <Paper elevation={5} style={openCart} className={styles.menu}>
                     <h3>Cart</h3>

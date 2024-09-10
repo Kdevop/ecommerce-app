@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { loginUser, authData, userAuthLoading, userAuthError } from '../../reduxStore/authSlice';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -20,7 +21,7 @@ function Login() {
     const dispatch = useDispatch();
 
     const handlePassVisibility = () => {
-        setShowPassword(!showPassword)
+        setShowPassword(!showPassword) 
     }
 
     const onSubmit = async (values, actions) => {
@@ -33,7 +34,16 @@ function Login() {
 
         console.log(credentials);
 
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        try {
+            const signin = await dispatch(loginUser(credentials));
+            console.log(signin);
+            //you will need some stuff on what happens if fails.
+            navigate('/') 
+
+        } catch (err) {
+            console.error(err);
+        }
+
         actions.resetForm();
     }
 

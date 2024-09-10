@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { registerUser, registerData, registering, registerError } from '../../reduxStore/authSlice';
+import { registerUser, authData, userAuthLoading, userAuthError } from '../../reduxStore/authSlice';
 
 const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -41,8 +41,8 @@ function Registration() {
         try {
             const register = await dispatch(registerUser(credentials));
             console.log(register)
-            
-            navigate('/');
+            //do you have anything here for if the user fails toregister, as in email already registered. 
+            navigate('/signin');
             
         } catch (err) {
             console.error(err);
