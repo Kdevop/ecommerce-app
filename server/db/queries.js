@@ -32,7 +32,7 @@ class Queries {
 
             return { error: false, data: user.rows[0] };
         } catch (err) {
-            return { error: true, message: "A problem occurred. Please try a different username and/or password" };
+            return { error: true, message: "A problem occurred. Please try a different email." };
         }
     }
 

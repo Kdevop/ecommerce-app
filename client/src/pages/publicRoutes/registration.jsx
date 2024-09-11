@@ -9,13 +9,13 @@ import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { registerUser, authData, userAuthLoading, userAuthError } from '../../reduxStore/authSlice';
+import { registerUser, authData, userAuthLoading, userAuthError, userRegDone } from '../../reduxStore/authSlice';
 
 const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
     email: Yup.string().email('Invalid email').required('Email is required'),
-    password: Yup.string().min(6, 'Password nust be at least 6 characters').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number').required('Password is required'),
+    password: Yup.string().min(6, 'Password nust be at least 6 characters').matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-_!@#$%^&*]).{6,}$/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number').required('Password is required'),
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('Confirm Password is required'),
 });
 
@@ -24,6 +24,9 @@ function Registration() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const message = useSelector(authData);
+    const registerComplete = useSelector(userRegDone);
+    const registerError = useSelector(userAuthError);
     
     const handlePassVisibility = () => {
         setShowPassword(!showPassword)
@@ -41,11 +44,20 @@ function Registration() {
         try {
             const register = await dispatch(registerUser(credentials));
             console.log(register)
-            //do you have anything here for if the user fails toregister, as in email already registered. 
-            navigate('/signin');
+                        
+            if (registerComplete) {
+                alert('You are registered.');
+                navigate('/login');
+            }
+
+            if(registerError) {
+                alert(`${message}`);
+            }
+            
             
         } catch (err) {
             console.error(err);
+            alert('An issue occured, please try again.');
         }
         
         actions.resetForm()
