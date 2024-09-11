@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const Queries = require('../db/queries');
+const passport = require('passport');
 
 const userQuerySchema = { name: 'user', userDetails: ''};
 const ordersQuerySchema = { name: 'orders', userDetails: '' };
@@ -38,10 +39,14 @@ const registerUser = async (req, res) => {
 
         const data = await registerQueries.registerUser(userDetails);
 
+        console.log(data);
+
         if (!data.error) {
             req.session.user = data.data;
             req.session.authenticated = true;
+
             res.status(200).json({ success: true, message: 'You are successfully registered!' });
+            
         } else {
             res.status(400).json({ success: false, message: data.message });
             

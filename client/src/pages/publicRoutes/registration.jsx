@@ -41,8 +41,9 @@ function Registration() {
         try {
             const register = await dispatch(registerUser(credentials));
             console.log(register)
+            alert('You have successfuly registered');
             //do you have anything here for if the user fails toregister, as in email already registered. 
-            navigate('/signin');
+            navigate('/login');
             
         } catch (err) {
             console.error(err);
@@ -128,4 +129,3 @@ function Registration() {
 
 export default Registration;
 
-//await new Promise((resolve) => setTimeout(resolve, 5000));

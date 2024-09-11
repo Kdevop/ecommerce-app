@@ -21,7 +21,7 @@ signinRouter.post('/', (req, res, next) => {
             if (loginErr) {
                 return res.status(500).json({ error: 'Login Error', msg: loginErr });
             }
-            return res.status(200).json({ user });
+            return res.status(200).json({ user }); 
         });
     }) (req, res, next);
 });
