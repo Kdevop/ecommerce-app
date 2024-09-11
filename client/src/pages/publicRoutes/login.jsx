@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { loginUser, authData, userAuthLoading, userAuthError } from '../../reduxStore/authSlice';
+import { loginUser, authData, userAuthLoading, userAuthError, userAuthDone } from '../../reduxStore/authSlice';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -19,6 +19,10 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const message = useSelector(authData);
+    const signInComplete = useSelector(userAuthDone);
+    const signInError = useSelector(userAuthError);
+
 
     const handlePassVisibility = () => {
         setShowPassword(!showPassword) 
@@ -38,10 +42,20 @@ function Login() {
             const signin = await dispatch(loginUser(credentials));
             console.log(signin);
             //you will need some stuff on what happens if fails.
-            navigate('/') 
+
+            if (signInComplete) {
+               alert('You are signed in!');
+               navigate('/');
+            }
+
+            if(signInError) {
+                alert(`${message}`);
+            }
+            
 
         } catch (err) {
             console.error(err);
+            alert('An issue occured, please try again.');
         }
 
         actions.resetForm();
@@ -54,7 +68,7 @@ function Login() {
                     <Avatar className={styles.avatar}>
                         <AddCircleOutlineOutlinedIcon />
                     </Avatar>
-                    <h3 className={styles.header}>Sign Ip</h3>
+                    <h3 className={styles.header}>Sign In</h3>
                     <Typography varient='caption'>To sign in, complete the form.</Typography>
                 </Grid>
                 <Formik

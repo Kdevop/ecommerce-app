@@ -56,8 +56,9 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (credentials
 
 const initialState = {
     isUserLoading: false,
+    isRegistered: false,
     isAuthenticated: false,
-    error: null,
+    error: false,
     data: []
 };
 
@@ -69,18 +70,21 @@ const authSlice = createSlice({
         builder
             .addCase(registerUser.pending, (state) => {
                 state.isUserLoading = true;
+                state.error = false;
             })
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.isUserLoading = false;
-                //state.isAuthenticated = true;  
+                state.isRegistered = true;  
                 state.data = action.payload;
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.isUserLoading = false;
-                state.error = action.payload.message;
+                state.error = true;
+                state.data = action.payload;
             })
             .addCase(loginUser.pending, (state) => {
                 state.isUserLoading = true;
+                state.error = false;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.isUserLoading = false;
@@ -89,7 +93,8 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.isUserLoading = false;
-                state.error = action.payload.message;
+                state.error = true;
+                state.data = action.payload;
             })
             .addCase(logoutUser.pending, (state) => {
                 state.isUserLoading = true;
@@ -111,3 +116,4 @@ export const authData = state => state.auth.data;
 export const userAuthLoading = state => state.auth.isUserLoading;
 export const userAuthError = state => state.auth.error;
 export const userAuthDone = state => state.auth.isAuthenticated;
+export const userRegDone = state => state.auth.isRegistered;
