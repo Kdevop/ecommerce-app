@@ -46,6 +46,22 @@ class Queries {
         }
     };
 
+    async getFromSchemaById() {
+        try {
+
+            console.log(this.schema, 'this is the schema from queries.');
+
+            const query = `SELECT * FROM products WHERE id = $1`;
+            const product = await pool.query(query, [this.schema.id]);
+
+            console.log(product, 'this is the product after the await.')
+
+            return { error: false, data: product.rows[0] }
+        } catch (error) {
+            return { error: true, message: error.message }
+        }
+    };
+
     async getFromSchemaByCategory() {
         try {
             const query = `SELECT * FROM products WHERE category = $1`; 
@@ -82,7 +98,7 @@ class Queries {
 
     async orderIdDetails(orderId) {
         try {
-            const result = await pool.query('SELECT * FROM orders INNER JOIN checkout ON orders.checkout_id = checkout.id WHERE orders.id = £1', [orderId]);
+            const result = await pool.query('SELECT * FROM orders INNER JOIN checkout ON orders.checkout_id = checkout.id WHERE orders.id = $1', [orderId]);
             return { error: false, data: result.rows[0] };
         } catch (error) {
             console.error({ message: 'Error collecting order details', error });
@@ -92,7 +108,7 @@ class Queries {
 
     async customerDetails() {
         try {
-            const userDetails = await pool.query('SELECT * FROM user WHERE id = £1', [this.schema.userConf]);
+            const userDetails = await pool.query('SELECT * FROM user WHERE id = $1', [this.schema.userConf]);
             if (userDetails.rows.length === 0) {
                 return { error: true, message: 'User not found' };
             } else {

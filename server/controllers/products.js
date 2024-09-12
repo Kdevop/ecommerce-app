@@ -1,6 +1,6 @@
 const Queries = require('../db/queries');
 
-const querySchema = { name: 'products', category: '', products: ''};
+const querySchema = { name: 'products', category: '', products: '', id: ''};
 const productsQueries = new Queries(querySchema);
 
 const getAllProducts = async (req, res) => {
@@ -16,6 +16,29 @@ const getAllProducts = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+const getProductById = async (req, res) => {
+    try {
+
+        const id = req.params.id;
+        
+        const productByIdSchema = {name: 'products', id};
+        const productById = new Queries(productByIdSchema);
+        
+        const product = await productById.getFromSchemaById(productByIdSchema);
+
+        if(product.error) {
+            return res.status(400).json({ success: false, message: product.message });
+        } if (product.rows === 0) {
+            return res.status(404).json({ success: false, message: 'No product with that id.' });
+        }
+        else {
+            return res.status(200).json({ success: true, message: 'Product returned', data: product.data });
+        }
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
 
 const getProductsByCategory = async (req, res) => {
     try {
@@ -59,6 +82,7 @@ const getProductByName = async (req, res) => {
 
 module.exports = {
     getAllProducts,
+    getProductById,
     getProductsByCategory,
     getProductByName,
 };

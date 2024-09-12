@@ -63,3 +63,17 @@ export const productInit = async () => {
     const json = await response.json();
     return json;
 }
+
+export const productById = async (id) => {
+    
+    const response = await fetch (`${API_ROOT}/products/id/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application.json'
+        },
+
+    });
+
+    const json = await response.json();
+    return json;
+};

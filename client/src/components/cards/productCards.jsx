@@ -16,14 +16,14 @@ function ProductCard(props) {
                 </div>
                 <div className={Styles.detailscontainer}>
                     <div className={Styles.moredeetsbtn}>
-                        <NavLink to='/'> More Details</NavLink>
+                        <NavLink to={`/products/${props.id}`}> More Details</NavLink>
                     </div>
                     <div className={Styles.price}>
                         <h4>{`${props.price}`}</h4>
                     </div>
                 </div>
             </div>
-        </Paper>
+        </Paper> 
     );
 };
 

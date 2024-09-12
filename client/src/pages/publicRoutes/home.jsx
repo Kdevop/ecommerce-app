@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import Footer from '../../components/footer/footer';
 import ProductCard from '../../components/cards/productCards';
-import Styles from '../publicRoutes/home.module.css'
+import Styles from '../publicRoutes/home.module.css';
 import { getProducts, productError, loadingProducts, productsReturned } from '../../reduxStore/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
-//import products from '../../mockData/products.json';
 import { useLocation } from 'react-router-dom';
 import {CircularProgress } from '@mui/material';
 
@@ -36,8 +35,10 @@ function Home() {
                     {products.map((product) => {
                         return (
 
+                            
                             <ProductCard
                                 key={product.id}
+                                id={product.id}
                                 name={product.name}
                                 description={product.description}
                                 category={product.category_id}
@@ -57,4 +58,4 @@ function Home() {
     );
 };
 
-export default Home;
+export default Home; 

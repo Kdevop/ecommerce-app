@@ -1,0 +1,14 @@
+.productcontainer {
+    padding: 20px;
+    width: 1000px;
+    margin: 20px auto;
+    display: flex;
+}
+
+.detailscontainer {
+    margin: 10px;
+    padding-top: 100px;
+}
+
+
+
