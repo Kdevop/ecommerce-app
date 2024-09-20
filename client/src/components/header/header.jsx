@@ -17,7 +17,8 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 
 // compoenent imports
 import SearchBar from '../search/search';
-import Cart from '../cart/cartCard';
+import Cart from '../../pages/privateRoutes/cart';
+//import Cart from '../cart/cartCard';
 import { userAuthDone } from '../../reduxStore/authSlice';
 
 
@@ -89,7 +90,7 @@ function Header() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            setIsLoggedIn(true);
+            setIsLoggedIn(true);  
         } else {
             setIsLoggedIn(false);
         }

@@ -1,26 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import Styles from '../publicRoutes/productDetails.module.css';
 import Footer from '../../components/footer/footer';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Paper } from '@mui/material';
 import { singleProdReturned, getProductById } from '../../reduxStore/productSlice';
-import { Paper } from '@mui/material';
+import { userAuthDone } from '../../reduxStore/authSlice';
+import { addToCart, cartUpdate, cartData } from '../../reduxStore/cartSlice';
+
 
 function ProductDetails() {
+    const [loginMessage, setLogginMessage] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const dispatch = useDispatch();
     const location = useLocation();
 
     const { id } = useParams();
     const product = useSelector(singleProdReturned);
+    const isAuthenticated = useSelector(userAuthDone);
 
     useEffect(() => {
         if (location.pathname === `/products/${id}`) {
             dispatch(getProductById(id));
+        }
+    }, [dispatch, location.pathname]);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [isAuthenticated]);
+
+    const onSubmit = async () => {
+        if(!isLoggedIn) {
+            setLogginMessage(true)
+        }
+
+        const productDetails = {
+            product: product.id,
+            quantity: 1,
+            price: product.price,
+            name: product.name,
+            url: product.image_url,  
+        }
+
+        const add = await dispatch(addToCart(productDetails));
+
+        console.log(add);
+
+        if(cartUpdate) {
 
         }
 
-    }, [dispatch, location.pathname]);
+    }
+
 
     if (product.length === 0) {
         return (
@@ -47,8 +83,17 @@ function ProductDetails() {
                     <h4>{product.price}</h4>
                 </div>
                 <div className={Styles.cart}>
-                    <p>some stuff to come here on adding to cart.</p>
+                    <Button fullWidth type='submit' variant='contained' color='primary' className={Styles.button} onClick={onSubmit} >Buy this!</Button>
                 </div>
+                {loginMessage? (
+                                <div>
+                                <p>You need to be logged in to add to your cart.</p>
+                                <p>Click here to <NavLink to='/register'>Register!</NavLink></p>
+                                <p>Click here to <NavLink to='/login'>Sign In!</NavLink></p>
+                            </div>
+                ): (
+                    null
+                )}
             </div>
         </Paper>
 
@@ -58,14 +103,3 @@ function ProductDetails() {
 
 export default ProductDetails;
 
-{/* <div>
-                <p>This is the Product Details page.</p>
-                <p>The product ID for this page is: {id}</p>
-
-                <p>This is the name: {product.name} </p>
-                <p>This is the description: {product.description} </p>
-                <p>This is the category: {product.category_id} </p>
-                <p>This is the image: {product.image_url} </p>
-                <p>This is the price: {product.price} </p>
-
-            </div> */}

@@ -1,0 +1,13 @@
+.cartcard_container {
+    width: 100%;
+}
+
+.details_container {
+    display: flex;
+    
+    gap: 1rem;
+}
+
+/* .details_child {
+    display: flex;
+} */

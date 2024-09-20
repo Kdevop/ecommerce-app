@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers, serializableCheck } from '@reduxjs/toolkit';
 import { persistStore,
     persistReducer,
     FLUSH,
@@ -10,23 +10,32 @@ import { persistStore,
 import storage from "redux-persist/lib/storage";
 import authSlice from './authSlice';
 import productSlice from './productSlice';
+import cartSlice from './cartSlice';
 import { thunk as thunkMiddleWare } from 'redux-thunk';
 
-const authPersistConfig = {
-    key: 'auth',
-    storage,
-};
+ const authPersistConfig = {
+     key: 'auth',
+     storage,
+ };
 
-const rootReducers = combineReducers({
+ const rootReducers = combineReducers({
     auth: persistReducer(authPersistConfig, authSlice),
     products: productSlice,
+    cart: cartSlice,
 })
 
 export const store = configureStore({
     reducer: rootReducers,
-    middleware: (getDefualtMiddleware) => getDefualtMiddleware().concat(thunkMiddleWare)
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }).concat(thunkMiddleWare),
 });
 
 
 export const persistor = persistStore(store);
+
+
 

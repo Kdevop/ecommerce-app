@@ -29,7 +29,7 @@ const appRouter=createBrowserRouter(createRoutesFromElements(
     <Route exact path='/orders' element={<Orders />} />
     <Route exact path='/orders/:orderId' element={<OrderDetails />} />
   </Route>
-))
+)) 
 
 
 function App() {

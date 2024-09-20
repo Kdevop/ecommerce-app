@@ -42,11 +42,11 @@ const registerUser = async (req, res) => {
         console.log(data);
 
         if (!data.error) {
-            req.session.user = data.data;
-            req.session.authenticated = true;
+            // req.session.user = data.data.data.id;  I am not sure about this, I have set it up so you are routed to log in, if you register...
+            // req.session.authenticated = true;
 
-            res.status(200).json({ success: true, message: 'You are successfully registered!' });
-            
+            res.status(200).json({ success: true, message: data.message, data: data.data });
+
         } else {
             res.status(400).json({ success: false, message: data.message });
             

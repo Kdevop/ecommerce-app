@@ -8,7 +8,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (credent
             console.warn(`Unbale to register user due to: ${response.message}`);
             return rejectWithValue(response.message);
         }
-
+ 
         return response;
     } catch (error) {
         console.error('Error registering user', error);

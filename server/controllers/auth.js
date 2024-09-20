@@ -59,6 +59,9 @@ module.exports = (passport) => {
 };
 
 module.exports.isAuth = (req, res, next) => {
+
+    console.log(req.header.Cookie)
+
     if (req.isAuthenticated()) {
         next();
     } else {

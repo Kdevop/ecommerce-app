@@ -10,14 +10,12 @@ class Queries {
     async registerUser() {
         const { hashedPassword, email, first_name, last_name } = this.schema.userDetails;
 
-        console.log(hashedPassword, email, first_name, last_name)
-
-        // Input validation
+                // Input validation
         if (!hashedPassword || !email || !first_name || !last_name) {
             return { error: true, message: "All fields are required - failed at db.queries." };
         }
 
-        const emailRegex =  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
         if (!emailRegex.test(email)) {
             return { error: true, message: "Invalid email format at DB checks" };
         }
@@ -28,9 +26,30 @@ class Queries {
                 [hashedPassword, email, first_name, last_name]
             );
 
+            if (user) {
 
+                try {
+                    const id = user.rows[0].id;
 
-            return { error: false, data: user.rows[0] };
+                    const newCartQuery = 'INSERT INTO cart (user_id) VALUES ($1) RETURNING *';
+                    const newCart = await pool.query(newCartQuery, [id])
+
+                    return {
+                        error: false, registered: true, cart: true, message: 'You are registered and a cart intitialized', data: {
+                            user: user.rows[0],
+                            cartId: newCart.rows[0]
+                        }
+                    }
+
+                } catch (error) {
+                    return {
+                        error: true, registered: true, cart: false, message: 'You are registered but a cart could not be initialized.', data: {
+                            user: user.rows[0]
+                        }
+                    }
+                }
+            }
+
         } catch (err) {
             return { error: true, message: "A problem occurred. Please try a different email." };
         }
@@ -49,12 +68,8 @@ class Queries {
     async getFromSchemaById() {
         try {
 
-            console.log(this.schema, 'this is the schema from queries.');
-
             const query = `SELECT * FROM products WHERE id = $1`;
             const product = await pool.query(query, [this.schema.id]);
-
-            console.log(product, 'this is the product after the await.')
 
             return { error: false, data: product.rows[0] }
         } catch (error) {
@@ -64,13 +79,13 @@ class Queries {
 
     async getFromSchemaByCategory() {
         try {
-            const query = `SELECT * FROM products WHERE category = $1`; 
+            const query = `SELECT * FROM products WHERE category = $1`;
             const products = await pool.query(query, [this.schema.category]);
 
             return { error: false, data: products.rows };
         } catch (error) {
             console.error({ message: "Error fetching products by category", error });
-            return { error: true, message: "An error occured while fetching products. Please try again later."};
+            return { error: true, message: "An error occured while fetching products. Please try again later." };
         }
     };
 
@@ -81,8 +96,8 @@ class Queries {
 
             return { error: false, data: products.rows };
         } catch (error) {
-            console.error({ message: 'Error fetching products by name', error});
-            return { error: true, message: 'An error occcured while fetching products. Please try again later.'}
+            console.error({ message: 'Error fetching products by name', error });
+            return { error: true, message: 'An error occcured while fetching products. Please try again later.' }
         }
     };
 
@@ -151,7 +166,7 @@ class Queries {
         const setClause = fields.map((field, index) => `${field} = ${index + 1}`).join(', ');
         //console.log(setClause);
         //console.log(`UPDATE users SET ${setClause} WHERE id = $${fields.length + 1}`, [...values, userId])
-        if(fields.length === 0) {
+        if (fields.length === 0) {
             return { error: true, message: 'Nothing to update' };
         } else {
             try {
@@ -163,45 +178,70 @@ class Queries {
         }
     }
 
-    async cartDetails() {
+    async initCart() {
+
+        const userId = this.schema.customerId;
+
         try {
-            const cartProdQuery = `SELECT * FROM carts
-                                    INNER JOIN cart_products
-                                    ON carts.id = cart_products.cart_id
-                                    WHERE customer_id = $1`;
-            const cartProducts = await pool.query(cartProdQuery, [this.schema.customerId]);
-            if(cartProducts.rows.length === 0) {
-                return { error: false, message: 'There are no products in your cart', data: cartProducts.rows };
+            const cartExistQuery = `SELECT * FROM carts WHERE user_id = $1`;
+            const cartExists = await pool.query(cartExistQuery, [this.schema.customerId]);
+
+            // If cart already exist, return the cart.
+            if (cartExists.rows.length > 0) {
+                return this.cartDetails(userId);
             } else {
-                return { error: false, message: 'Here are the products in your cart', data: cartProducts.rows };
+                const newCartQuery = 'INSERT INTO cart (user_id) VALUES ($1) RETURNING *';
+                const newCart = await pool.query(newCartQuery, [this.schema.customerId]);
+                return { error: false, exists: true, message: 'A cart has been opened', data: newCart.rows[0] };
             }
         } catch (error) {
-            console.error({ message: 'Error in returning cart products', error });
+            console.error({ message: 'Error contacting SQL to open cart', error });
+            return { error: true, exists: false, message: 'Unable to open a new cart. Try block failed.' };
+        }
+    }
+
+    async cartDetails(customerId) {
+        
+        try {
+            const cartProdQuery = `SELECT * FROM cart
+                                    INNER JOIN cart_products
+                                    ON cart.id = cart_products.cart_id
+                                    WHERE user_id = $1`;
+            const cartProducts = await pool.query(cartProdQuery, [customerId.customerId]);
+            if (cartProducts.rows.length === 0) {
+                return { error: false, hasProd: false, message: 'There are no products in your cart', data: cartProducts.rows };
+            } else {
+                return { error: false, hasProd: true, message: 'Here are the products in your cart', data: cartProducts.rows };
+            }
+        } catch (error) {
+            console.error({ message: 'Error in returning cart products at queries', error });
             return { error: true, message: 'Unable to return your cart at the moment. Please try again later.' };
         }
     }
 
-    async addProductToCart() {
+    async addProductToCart(addProducts) {
+        const {customerId, product, quantity, price, name, url} = addProducts;
+
         try {
             //get the cart for the current user
-            const cartQuery = `SELECT if FROM cart WHERE user_id = $1`;
-            const cartResult = await pool.query(cartQuery, [this.schema.customerId]);
+            const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
+            const cartResult = await pool.query(cartQuery, [customerId]);
 
-            if(cartResult.rows.length ===0) {
+            if (cartResult.rows.length === 0) {
                 return { error: true, message: 'User does not have a cart' };
             }
 
             const cartId = cartResult.rows[0].id;
 
-            const insertQuery = `INSERT INTO cart_products (cart_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING *`;
-            const insertResult = await pool.query(insertQuery, [cartId, this.schema.product, this.schema.quantity]);
+            const insertQuery = `INSERT INTO cart_products (cart_id, product_id, quantity, product_price, product_name, product_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`; 
+            const insertResult = await pool.query(insertQuery, [cartId, product, quantity, price, name, url ]);
 
             return { error: false, data: insertResult.rows };
         } catch (error) {
             console.error({ message: 'Error adding product to cart', error });
             return { error: true, message: 'Unable to add product to cart. Please try again later.' };
         }
-    } 
+    }
 
     async amendCart() {
         try {
@@ -210,7 +250,7 @@ class Queries {
 
             const cartId = cartResult.rows[0].id;
 
-            const updateQuery = `UPDAE cart_products SET quantity = $1 WHERE cart_id = $2 RETURNING *`;
+            const updateQuery = `UPDAE cart_products SET quantity = $1 WHERE cart_id = $2 RETURNING *`; //this need amending, becuase you need to update the quantity of the product for the cart Id.
             const updateResult = await pool.query(updateQuery, [this.schema.quantity, cartId]);
 
             return { error: false, data: updateResult.rows }
@@ -223,12 +263,12 @@ class Queries {
 
     async removeFromCart() {
         try {
-            const cartQuery = `SELECT if FROM cart WHERE user_id = $1`;
+            const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
             const cartResult = await pool.query(cartQuery, [this.schema.customerId]);
 
             const cartId = cartResult.rows[0].id;
 
-            const deleteQuery = `DELETE FROM cart_products WHERE cart_id = $1 AND product_id = $2`;
+            const deleteQuery = `DELETE FROM cart_products WHERE cart_id = $1 AND product_id = $2`; //this needs amending because you need the cart returned. 
             const deleteResult = await pool.query(deleteQuery, [cartId, this.schema.products]);
 
             return { error: false, data: deleteResult.rows };
@@ -246,13 +286,13 @@ class Queries {
 
             const fetchCart = await this.cartDetails(userId);
 
-            if(fetchCart.data.length === 0) {
+            if (fetchCart.data.length === 0) {
                 console.error({ message: 'These is nothing in your cart.' });
                 return { error: true, message: 'Your cart is currently empty.' };
             } else {
                 let totalPrice = 0;
                 for (let item of fetchCart.data) {
-                    totalPrice += item.qunatity * item.product_price;
+                    totalPrice += item.quantity * item.product_price;
                 }
 
                 const data = new Date();
@@ -261,13 +301,13 @@ class Queries {
                 const checkoutQuery = `INSERT INTO checkout (payment_method, total_price, checkout_data, cart_id) VALUES ($1, $2, $3, $4) RETURNING *`;
                 const createCheckout = await pool.query(checkoutQuery, [paymentMethod, totalPrice, today, cartId]);
 
-                if(!createCheckout) {
+                if (!createCheckout) {
                     console.error({ message: `Unable to create checkout` });
                     return { error: true, message: 'Unable to process checkout' };
                 } else {
                     console.log('Return to front end to begin processing payment');
-                    return { error: false, message: 'Checkout ready to be processed.', data: createCheckout};
-                } 
+                    return { error: false, message: 'Checkout ready to be processed.', data: createCheckout };
+                }
             }
         } catch (error) {
             console.error('Unable to process at query.', error);
@@ -275,7 +315,7 @@ class Queries {
         }
 
         //further details on processing payment to be added once I have handled the front end. I will need to do an insert statement into orders once complete. 
-    } 
+    }
 }
 
 module.exports = Queries;

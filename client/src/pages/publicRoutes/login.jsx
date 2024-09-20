@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './login.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import { Formik, Form, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
@@ -9,6 +9,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { loginUser, authData, userAuthLoading, userAuthError, userAuthDone } from '../../reduxStore/authSlice';
+import { getCart } from '../../reduxStore/cartSlice';
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -30,7 +31,7 @@ function Login() {
 
     const onSubmit = async (values, actions) => {
 
-        //object items in the credentials, should match the expected fields for the rwquest body in the the server paaport.auth.
+        //object items in the credentials, should match the expected fields for the request body in the the server paaport.auth.
         const credentials = {
             username: values.email,
             password: values.password,
@@ -41,16 +42,19 @@ function Login() {
         try {
             const signin = await dispatch(loginUser(credentials));
             console.log(signin);
-            //you will need some stuff on what happens if fails.
+            console.log(signInComplete);
 
-            if (signInComplete) {
-               alert('You are signed in!');
-               navigate('/');
-            }
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            console.log(signInComplete);
+            
+            // if (signInComplete) {
+            //    alert('You are signed in!');
+            //    navigate('/');
+            // }
 
-            if(signInError) {
-                alert(`${message}`);
-            }
+            // if(signInError) { 
+            //     alert(`${message}`);
+            // }
             
 
         } catch (err) {
@@ -60,6 +64,20 @@ function Login() {
 
         actions.resetForm();
     }
+
+    useEffect(() => {
+        if(signInComplete) {
+            
+            alert("You are signed in!") //change these alerts from a pop up to something else. 
+            dispatch(getCart());
+
+            navigate('/');
+        }
+
+        if (signInError) {
+            alert(`${message}`);
+        }
+    }, [signInComplete, signInError, dispatch])
 
     return (
         <Grid className={styles.registration}>

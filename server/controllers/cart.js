@@ -1,10 +1,10 @@
 const Queries = require('../db/queries');
 
-const querySchema = { name: 'carts', customerId: '', products: '', quantity: '', paymentMethod: '', cartId: '' };
+const querySchema = { name: 'carts', customerId: '', products: '', quantity: '', price: '', name: '', url: '', paymentMethod: '', cartId: '' };
 const cartQueries = new Queries(querySchema);
 
 
-const openCart = async (req,res) => {
+const openCart = async (req, res) => {
     try {
         const newCart = { ...cartQueries.querySchema, customerId: req.session.passport.user };
         const result = await cartQueries.initCart(newCart);
@@ -21,13 +21,16 @@ const openCart = async (req,res) => {
 
 const getFromCart = async (req, res) => {
     try {
-        const cartProducts = { ...cartQueries.querySchema, customerId: req.session.passport.user };
+        const customerId = req.session.passport.user;
+
+        const cartProducts = { ...cartQueries.querySchema, customerId };
+                
         const result = await cartQueries.cartDetails(cartProducts);
 
         if(result.error) {
             return res.status(400).json({ success: false, message: result.message });
         } else {
-            return res.status(200).json({ success: true, message: result.message, data: result.data });
+            return res.status(200).json({ success: true, hasProd: result.hasProd, message: result.message, data: result.data });
         }
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Unable to return cart. Failed at query.' });
@@ -36,9 +39,11 @@ const getFromCart = async (req, res) => {
 
 const addToCart = async (req, res) => {
     try {
-        const addProducts = { ...cartQueries.querySchema, customerId: req.session.passport.user, products: req.body.productId, quantity: req.body.quantity };
+        const addProducts = { ...cartQueries.querySchema, customerId: req.session.passport.user, product: req.body.product, quantity: req.body.quantity, price: req.body.price, name: req.body.name, url: req.body.url };
+        console.log(addProducts, 'this is line 43 of cart.js')
+
         const result = await cartQueries.addProductToCart(addProducts);
-        
+         
         if(result.error) {
             return res.status(400).json({ success: false, message: result.message });
         } else {
