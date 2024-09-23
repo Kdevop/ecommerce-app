@@ -40,8 +40,7 @@ const getFromCart = async (req, res) => {
 const addToCart = async (req, res) => {
     try {
         const addProducts = { ...cartQueries.querySchema, customerId: req.session.passport.user, product: req.body.product, quantity: req.body.quantity, price: req.body.price, name: req.body.name, url: req.body.url };
-        console.log(addProducts, 'this is line 43 of cart.js')
-
+        
         const result = await cartQueries.addProductToCart(addProducts);
          
         if(result.error) {
@@ -80,9 +79,9 @@ const updateCart = async (req, res) => {
 
 const deleteItem = async (req, res) => {
 
-    const product = req.params.productId;
+    // const product = req.params.productId;
 
-    console.log(product);
+    // console.log(product);
 
     try {
 

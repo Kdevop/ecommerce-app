@@ -37,8 +37,6 @@ function Login() {
             password: values.password,
         };
 
-        console.log(credentials);
-
         try {
             const signin = await dispatch(loginUser(credentials));
             console.log(signin);

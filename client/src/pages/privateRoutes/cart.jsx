@@ -74,7 +74,7 @@ function Cart() {
                         />
                     ))}
 
-                    <p>This will be the total: ${runningTotal()}</p>
+                    <p>Current total: ${runningTotal()}</p>
 
                     <Button fullWidth type='submit' variant='contained' color='primary'>Checkout</Button>
 

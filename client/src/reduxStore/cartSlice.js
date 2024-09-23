@@ -11,7 +11,6 @@ export const getCart = createAsyncThunk('cart/getCart', async (_, { rejectWithVa
             return rejectWithValue(response.message);
         }
 
-        console.log(response);
         return response
 
     } catch (error) {
@@ -23,8 +22,7 @@ export const getCart = createAsyncThunk('cart/getCart', async (_, { rejectWithVa
 export const addToCart = createAsyncThunk('cart/addToCart', async (productDetails, {rejectWithValue}) => {
     try {
         const response = await insertToCart(productDetails);
-        console.log(response);
-
+        
         if(!response.success) {
             console.warn(`Unable to add product to cart due to: ${response.message}`);
             return rejectWithValue(response.message)
@@ -41,8 +39,7 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (productDetail
 export const updateCart = createAsyncThunk('cart/updateCart', async (details, {rejectWithValue}) => {
     try {
         const response = await amendCart(details);
-        console.log(response);
-
+        
         if(!response.success) {
             console.warn(`Unable to add product to cart due to: ${response.message}`);
             return rejectWithValue(response.message)
@@ -59,8 +56,7 @@ export const deleteItem = createAsyncThunk('cart/deleteItem', async (product, {r
 
     try {
         const response = await deleteProduct(product);
-        console.log(response);
-
+        
         if(!response.success) {
             console.warn(`Unable to delete product due to: ${response.message}`);
             return rejectWithValue(response.message);

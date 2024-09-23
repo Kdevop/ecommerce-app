@@ -51,9 +51,9 @@ function ProductDetails() {
 
         console.log(add);
 
-        if(cartUpdate) {
+        // if(cartUpdate) 
 
-        }
+        // }
 
     }
 

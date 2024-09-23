@@ -31,9 +31,6 @@ function CartCard(props) {
 
             const product = props.id;
 
-
-            console.log(product);
-
             dispatch(deleteItem(product));
 
         } else {
@@ -42,8 +39,6 @@ function CartCard(props) {
                 productId: props.id,
                 quantity
             }
-
-            console.log(details);
 
             dispatch(updateCart(details))
 
@@ -57,8 +52,6 @@ function CartCard(props) {
     const quantity = parseInt(props.quantity, 10); // Assuming quantity is an integer
     
     const subPrice = price * quantity;
-
-    console.log(subPrice)
 
     return (
         <div className={Styles.cartcard_container}>

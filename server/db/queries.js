@@ -266,9 +266,6 @@ class Queries {
 
         const {customerId, product} = deleteProducts;
 
-        console.log(customerId)
-        console.log(product)
-
         try {
             const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
             const cartResult = await pool.query(cartQuery, [customerId]);

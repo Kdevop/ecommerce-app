@@ -19,7 +19,7 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (credent
 export const loginUser = createAsyncThunk('auth/loginUser', async (credentials, { rejectWithValue }) => {
     try {
         const response = await signinUser(credentials);
-        console.log(response);
+        
         if (!response.user) {
             console.warn(`Unable to signin user due to: ${response.message}`);
             return rejectWithValue(response.message);
@@ -36,8 +36,7 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (credentials, 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async (credentials, { rejectWithValue }) => {
     try {
         const response = await logout();
-        console.log(response);
-
+        
         if (!response.success) {
 
             console.warn(`Something when wrong logging out: ${response.message}`);
