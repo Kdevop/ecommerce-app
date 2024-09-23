@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { customerCart, insertToCart } from '../apis/apiRequest';
+import { customerCart, insertToCart, amendCart, deleteProduct } from '../apis/apiRequest';
 
 //get cart here.
 export const getCart = createAsyncThunk('cart/getCart', async (_, { rejectWithValue }) => {
@@ -34,6 +34,41 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (productDetail
 
     } catch (error) {
         console.error(`Error adding product to cart`, error);
+        return rejectWithValue(error);
+    }
+})
+
+export const updateCart = createAsyncThunk('cart/updateCart', async (details, {rejectWithValue}) => {
+    try {
+        const response = await amendCart(details);
+        console.log(response);
+
+        if(!response.success) {
+            console.warn(`Unable to add product to cart due to: ${response.message}`);
+            return rejectWithValue(response.message)
+        }
+
+        return response; 
+    } catch (error) {
+        console.error(`Error adding product to cart`, error);
+        return rejectWithValue(error);
+    }
+})
+
+export const deleteItem = createAsyncThunk('cart/deleteItem', async (product, {rejectWithValue}) => {
+
+    try {
+        const response = await deleteProduct(product);
+        console.log(response);
+
+        if(!response.success) {
+            console.warn(`Unable to delete product due to: ${response.message}`);
+            return rejectWithValue(response.message);
+        }
+
+        return response;
+    } catch (error) {
+        console.error(`Error deleting product from cart`, error);
         return rejectWithValue(error);
     }
 })
@@ -85,6 +120,30 @@ const cartSlice = createSlice({
             })
             .addCase(resetUpdateCart, (state) => {
                 state.cartUpdate = false;
+            })
+            .addCase(updateCart.pending, (state) => {
+                state.initUpdate = true;
+                state.cartUpdate = false;
+            })
+            .addCase(updateCart.fulfilled, (state, action) => {
+                state.initCart = false;
+                state.cartUpdate = action.payload;
+            })
+            .addCase(updateCart.rejected, (state) => {
+                state.initCart = false;
+                state.cartUpdateError = true;
+            })
+            .addCase(deleteItem.pending, (state) => {
+                state.initUpdate = true;
+                state.cartUpdate = false;
+            })
+            .addCase(deleteItem.fulfilled, (state, action) => {
+                state.initCart = false;
+                state.cartUpdate = true;
+            })
+            .addCase(deleteItem.rejected, (state) => {
+                state.initCart = false;
+                state.cartUpdateError = true;
             })
     }
 });

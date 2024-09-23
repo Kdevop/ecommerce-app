@@ -47,16 +47,6 @@ function Login() {
             await new Promise(resolve => setTimeout(resolve, 5000));
             console.log(signInComplete);
             
-            // if (signInComplete) {
-            //    alert('You are signed in!');
-            //    navigate('/');
-            // }
-
-            // if(signInError) { 
-            //     alert(`${message}`);
-            // }
-            
-
         } catch (err) {
             console.error(err);
             alert('An issue occured, please try again.');

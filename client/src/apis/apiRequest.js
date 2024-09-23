@@ -114,3 +114,37 @@ export const insertToCart = async (productDetails) => {
     return json;
 };
 
+export const amendCart = async (details) => {
+    const {productId, quantity} = details;
+
+    const response = await fetch (`${API_ROOT}/cart/item/cartId`, {
+        method: 'PUT', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify({
+            productId, 
+            quantity
+        }),
+        credentials: 'include',
+    })
+
+    const json = await response.json();
+    return json;
+};
+
+export const deleteProduct = async(product) => {
+
+    const response = await fetch (`${API_ROOT}/cart/item/${product}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application.json'
+        },
+
+        credentials: 'include',
+
+    });
+
+    const json = await response.json();
+    return json;
+}

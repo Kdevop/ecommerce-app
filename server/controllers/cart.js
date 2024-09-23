@@ -69,21 +69,32 @@ const updateCart = async (req, res) => {
         if(result.error) {
             return res.status(400).json({ success: false, message: result.message });
         } else {
-            return res.status(200).json({ success: true, message: result.message, data: result.data });
+            return res.status(200).json({ success: true, message: result.message, data: result.data }); //this needs updating, we dont get a message back. Also, seem to be an issue with the data. 
         }
     } catch (error) {
         console.error('Error updating cart: ', error);
-        return res.status(500).json({ success: false, message: 'Unable to add t cart. Failed at query.' });
+        return res.status(500).json({ success: false, message: 'Unable to add t cart.' });
     }
 }
 
 
 const deleteItem = async (req, res) => {
+
+    const product = req.params.productId;
+
+    console.log(product);
+
     try {
 
-        const deleteProducts = { ...cartQueries.querySchema, customerId: req.session.passport.user, products: Number(req.params.productId) };
+        const deleteProducts = { ...cartQueries.querySchema, customerId: req.session.passport.user, product: Number(req.params.productId) };
         const result = await cartQueries.removeFromCart(deleteProducts);
 
+        if(result.error) {
+            return res.status(400).json({ success: false, message: result.message }) 
+        } else {
+            return res.status(200).json({ success: true, data: result.data })
+        }
+         
     } catch (error) {
         console.error('Error updating cart:', error);
         return res.status(500).json({ success: false, message: 'Unable to delete from cart. Failed at query.'})
@@ -104,7 +115,7 @@ const deleteItem = async (req, res) => {
         console.error('Error at route', error);
         return res.status(500).json({ success: false, message: error });
     }
- }
+ } 
 
 module.exports = {
     getFromCart,

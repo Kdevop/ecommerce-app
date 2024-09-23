@@ -243,15 +243,16 @@ class Queries {
         }
     }
 
-    async amendCart() {
+    async amendCart(amendProducts) {
+        const {customerId, products, quantity} = amendProducts;
         try {
             const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
-            const cartResult = await pool.query(cartQuery, [this.schema.customerId]);
+            const cartResult = await pool.query(cartQuery, [customerId]);
 
             const cartId = cartResult.rows[0].id;
 
-            const updateQuery = `UPDAE cart_products SET quantity = $1 WHERE cart_id = $2 RETURNING *`; //this need amending, becuase you need to update the quantity of the product for the cart Id.
-            const updateResult = await pool.query(updateQuery, [this.schema.quantity, cartId]);
+            const updateQuery = `UPDATE cart_products SET quantity = $1 WHERE cart_id = $2 AND product_id = $3 RETURNING *`; //this need amending, becuase you need to update the quantity of the product for the cart Id.
+            const updateResult = await pool.query(updateQuery, [quantity, cartId, products]);
 
             return { error: false, data: updateResult.rows }
 
@@ -261,17 +262,24 @@ class Queries {
         }
     }
 
-    async removeFromCart() {
+    async removeFromCart(deleteProducts) {
+
+        const {customerId, product} = deleteProducts;
+
+        console.log(customerId)
+        console.log(product)
+
         try {
             const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
-            const cartResult = await pool.query(cartQuery, [this.schema.customerId]);
+            const cartResult = await pool.query(cartQuery, [customerId]);
 
             const cartId = cartResult.rows[0].id;
 
-            const deleteQuery = `DELETE FROM cart_products WHERE cart_id = $1 AND product_id = $2`; //this needs amending because you need the cart returned. 
-            const deleteResult = await pool.query(deleteQuery, [cartId, this.schema.products]);
+            const deleteQuery = `DELETE FROM cart_products WHERE cart_id = $1 AND product_id = $2 RETURNING *`; //this needs amending because you need the cart returned. 
+            const deleteResult = await pool.query(deleteQuery, [cartId, product]);
 
             return { error: false, data: deleteResult.rows };
+            
         } catch (error) {
             console.error({ message: 'Error deleting product from cart', error });
             return { error: true, message: 'unable to delete product. Failed as query.' }

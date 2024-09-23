@@ -18,7 +18,7 @@ function Cart() {
     useEffect(() => {
         if (haveCart) {
 
-            if (!cart.hasProd) {
+            if (!cart.hasProd) { 
                 setHasProd(false);
             }
 
@@ -36,6 +36,18 @@ function Cart() {
         }
     }, [update, dispatch, getCart, resetUpdateCart]);
 
+    const runningTotal = () => {
+
+        let totalPrice = 0;
+
+        for (let item of cart.data) {
+            totalPrice += item.quantity * parseFloat(item.product_price.replace('$', ''));
+        }
+
+        return totalPrice.toFixed(2);
+    }
+
+    
     if (!loggedIn) {
         return (
             <div>
@@ -44,7 +56,7 @@ function Cart() {
                 <p>Click here to <NavLink to='/login'>Sign In!</NavLink></p>
             </div>
         )
-    }
+    } 
 
     return (
         <div>
@@ -62,7 +74,7 @@ function Cart() {
                         />
                     ))}
 
-                    <p>This will be the total:   </p>
+                    <p>This will be the total: ${runningTotal()}</p>
 
                     <Button fullWidth type='submit' variant='contained' color='primary'>Checkout</Button>
 

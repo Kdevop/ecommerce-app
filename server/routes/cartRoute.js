@@ -10,9 +10,9 @@ cartRouter.post('/open', openCart); //might remove this as a route as not sure i
 //end point for adding product to cart
 cartRouter.put('/item/', isAuth, addToCart);
 //end point for updating cart
-cartRouter.put('/item/:cartId', updateCart);
+cartRouter.put('/item/cartId', isAuth, updateCart);
 //end point for deleting from cart
-cartRouter.delete('/item/:productId', deleteItem);
+cartRouter.delete('/item/:productId', isAuth, deleteItem);
 //end point for check out
 cartRouter.post('/:cartId/checkout', checkout);
 
