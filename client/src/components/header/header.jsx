@@ -1,9 +1,9 @@
 // dependency imports
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { Paper } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // styles, images and logos imports
 import styles from '../header/header.module.css';
@@ -12,25 +12,24 @@ import logo_name from '../../assets/logo_name.jpg';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCartShopping, faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 
 // compoenent imports
 import SearchBar from '../search/search';
 import Cart from '../../pages/privateRoutes/cart';
-//import Cart from '../cart/cartCard';
 import { userAuthDone } from '../../reduxStore/authSlice';
-
-
+import { getProducts, getProductByCategory } from '../../reduxStore/productSlice';
 
 function Header() {
     const location = useLocation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const [isOpenCat, setIsOpenCat] = useState(false);
     const [isOpenAcc, setIsOpenAcc] = useState(false);
     const [isOpenCart, setIsOpenCart] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const isAuthenticated = useSelector(userAuthDone);
-
+    
     const displayMenu = () => {
         if (isOpenAcc) {
             setIsOpenAcc(!isOpenAcc)
@@ -96,6 +95,16 @@ function Header() {
         }
     }, [isAuthenticated]);
 
+    const productCategory = async (category) => {
+        if (category === 0) {
+            dispatch(getProducts());
+            navigate('/');
+        } else {
+            dispatch(getProductByCategory(category));
+            navigate('/'); 
+        }
+    }
+
     return (
         <div>
             <div className={styles.navbar}>
@@ -111,9 +120,10 @@ function Header() {
                 <Paper elevation={5} style={openCat} className={styles.menu}>
                     <h3>Categories</h3>
                     <ul className={styles.menu}>
-                        <li>T-shirt</li>
-                        <li>Shoes</li>
-                        <li>Suits</li>
+                        <button onClick={() => productCategory(1)}>T-shirt</button>
+                        <button onClick={() => productCategory(2)}>Shoes</button>
+                        <button onClick={() => productCategory(3)}>Suits</button>
+                        <button onClick={() => productCategory(0)}>All Products</button>
                     </ul>
                 </Paper>
                 <Paper elevation={5} style={openAcc} className={styles.menu}>

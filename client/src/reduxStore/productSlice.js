@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { productInit, productById } from '../apis/apiRequest';
+import { productInit, productById, productByCat } from '../apis/apiRequest';
 
 export const getProducts = createAsyncThunk('products/getProducts', async (_, { rejectWithValue }) => {
     try {
@@ -20,6 +20,23 @@ export const getProducts = createAsyncThunk('products/getProducts', async (_, { 
 export const getProductById = createAsyncThunk('product/getProductById', async (id, {rejectWithValue}) => {
     try {
         const response = await productById(id);
+
+        if(!response.success) {
+            console.warn(`Unable to get product: ${response.message}`);
+            return rejectWithValue(response.message);
+        }
+
+        return response.data;
+
+    } catch (error) {
+        console.error('Error getting the product by Id: ', error);
+        return rejectWithValue(error.message);
+    }
+})
+
+export const getProductByCategory = createAsyncThunk('product/getProductByCategory', async (category, {rejectWithValue}) => {
+    try{ 
+        const response = await productByCat(category);
 
         if(!response.success) {
             console.warn(`Unable to get product: ${response.message}`);
@@ -71,6 +88,18 @@ const productSlice = createSlice({
                 state.data.singleProd = action.payload;
             })
             .addCase(getProductById.rejected, (state, action) => {
+                state.isLoading = false; 
+                state.error = true;
+            })
+            .addCase(getProductByCategory.pending, (state, action) => {
+                state.isLoading = true;
+            })
+            .addCase(getProductByCategory.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.loaded = true;
+                state.data.allProd = action.payload;
+            })
+            .addCase(getProductByCategory.rejected, (state, action) => {
                 state.isLoading = false; 
                 state.error = true;
             })

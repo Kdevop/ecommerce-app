@@ -78,6 +78,19 @@ export const productById = async (id) => {
     return json;
 };
 
+export const productByCat = async (category) => {
+    const response = await fetch (`${API_ROOT}/products/category/${category}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application.json'
+        },
+
+    });
+
+    const json = await response.json();
+    return json;
+}
+
 export const customerCart = async () => {
     const response = await fetch (`${API_ROOT}/cart/` , {
         method: 'GET',

@@ -7,6 +7,6 @@ productRouter.get('/id/:id', getProductById);
 productRouter.get('/category/:category', getProductsByCategory);
 productRouter.get('/name/:name', getProductByName);
 
-module.exports = {
+module.exports = { 
     productRouter
 };

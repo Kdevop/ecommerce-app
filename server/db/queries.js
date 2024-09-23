@@ -77,10 +77,13 @@ class Queries {
         }
     };
 
-    async getFromSchemaByCategory() {
+    async getFromSchemaByCategory(category) {
+
+        const id = category.category;
+        
         try {
-            const query = `SELECT * FROM products WHERE category = $1`;
-            const products = await pool.query(query, [this.schema.category]);
+            const query = `SELECT * FROM products WHERE category_id = $1`;
+            const products = await pool.query(query, [ id ]);
 
             return { error: false, data: products.rows };
         } catch (error) {

@@ -22,14 +22,15 @@ const getProductById = async (req, res) => {
 
         const id = req.params.id;
         
-        const productByIdSchema = {name: 'products', id};
+        const productByIdSchema = {name: 'products', id: id};
+        
         const productById = new Queries(productByIdSchema);
         
         const product = await productById.getFromSchemaById(productByIdSchema);
 
         if(product.error) {
             return res.status(400).json({ success: false, message: product.message });
-        } if (product.rows === 0) {
+        } if (product.data.length === 0) {
             return res.status(404).json({ success: false, message: 'No product with that id.' });
         }
         else {
@@ -43,17 +44,18 @@ const getProductById = async (req, res) => {
 const getProductsByCategory = async (req, res) => {
     try {
         const reqCategory = req.params.category;
+        
         if (!reqCategory) {
             return res.status(400).json({ success: false, message: 'Category is required.'});
-        }
+        } 
 
-        const updatedQuerySchema = { ...productsQueries.querySchema, category: reqCategory };
+        const updatedQuerySchema = { ...productsQueries.querySchema, name: 'products', category: reqCategory };
         const result = await productsQueries.getFromSchemaByCategory(updatedQuerySchema);
 
         if(result.error) {
             return res.status(400).json({ success: false, message: result.message });
         }
-        if (result.rows.length === 0) {
+        if (result.data.length === 0) {
             res.status(404).json({ success: false, message: 'No products by that category.' });
         } else {
             res.status(200).json({ success: true, message: 'Products returned by category', data: result.data });
