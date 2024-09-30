@@ -17,7 +17,7 @@ export const getCart = createAsyncThunk('cart/getCart', async (_, { rejectWithVa
         console.error('Error collecting cart', error);
         return rejectWithValue(error.message);
     }
-})
+});
 
 export const addToCart = createAsyncThunk('cart/addToCart', async (productDetails, {rejectWithValue}) => {
     try {
@@ -28,13 +28,14 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (productDetail
             return rejectWithValue(response.message)
         }
 
+        console.log(response);
         return response;
 
     } catch (error) {
         console.error(`Error adding product to cart`, error);
         return rejectWithValue(error);
     }
-})
+});
 
 export const updateCart = createAsyncThunk('cart/updateCart', async (details, {rejectWithValue}) => {
     try {
@@ -50,7 +51,7 @@ export const updateCart = createAsyncThunk('cart/updateCart', async (details, {r
         console.error(`Error adding product to cart`, error);
         return rejectWithValue(error);
     }
-})
+});
 
 export const deleteItem = createAsyncThunk('cart/deleteItem', async (product, {rejectWithValue}) => {
 
@@ -67,7 +68,7 @@ export const deleteItem = createAsyncThunk('cart/deleteItem', async (product, {r
         console.error(`Error deleting product from cart`, error);
         return rejectWithValue(error);
     }
-})
+});
 
 const initialState = {
     fetchingCart: false,

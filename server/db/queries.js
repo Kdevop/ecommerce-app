@@ -53,7 +53,7 @@ class Queries {
         } catch (err) {
             return { error: true, message: "A problem occurred. Please try a different email." };
         }
-    }
+    };
 
     async getAllFromSchema() {
         try {
@@ -122,64 +122,90 @@ class Queries {
             console.error({ message: 'Error collecting order details', error });
             return { error: true, message: error.message };
         }
-    }
+    };
 
-    async customerDetails() {
+    async customerDetails(userId) {
         try {
-            const userDetails = await pool.query('SELECT * FROM user WHERE id = $1', [this.schema.userConf]);
+            const userDetails = await pool.query('SELECT id, email, first_name, last_name FROM user_customer WHERE id = $1', [userId]);
             if (userDetails.rows.length === 0) {
                 return { error: true, message: 'User not found' };
             } else {
-                return { error: false, data: result.rows[0] };
+                //return { error: false, data: result.rows[0] };
+                // query address here
+                const userAddress = await pool.query('SELECT * FROM billing_address WHERE user_id = $1', [userId]);
+
+                if(userAddress.rows.length === 0) {
+                    return { error: false, user: true, address: false, userData: userDetails.rows[0] };
+                } else{
+                    return { error: false, user: true, address: true, userData: userDetails.rows[0], addressData: userAddress.rows[0] };
+                }
             }
         } catch (error) {
             console.error({ message: 'Error collecting customer details', error });
             return { error: true, message: error.message };
         }
-    }
+    };
 
-    async updateUserDetails(userDetails) {
-        const { userId, email, password, firstName, lastName } = userDetails;
+    async updateUserDetails(changes, userId) {
+        const { email, password, firstName, lastName } = changes;
 
-        const fields = [];
-        const values = [];
+        const user = userId;
+        console.log(user);
 
-        if (email) {
+        console.log('this is the changes object in updateUserDetails', changes);
+        console.log(firstName);
+        console.log(lastName);
+
+        let fields = [];
+        let values = [];
+
+        if (changes.email) {
             fields.push('email');
             values.push(email);
         }
 
-        if (password) {
+        if (changes.password) {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password, salt);
             fields.push('password');
             values.push(hash);
         }
 
-        if (firstName) {
+        if (changes.firstName) {
             fields.push('first_name');
             values.push(firstName);
+            
         }
 
-        if (lastName) {
+        if (changes.lastName) {
             fields.push('last_name');
             values.push(lastName);
         }
 
-        const setClause = fields.map((field, index) => `${field} = ${index + 1}`).join(', ');
-        //console.log(setClause);
-        //console.log(`UPDATE users SET ${setClause} WHERE id = $${fields.length + 1}`, [...values, userId])
+        console.log(fields);
+        console.log(values);
+
+        const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+        console.log(setClause);
+        console.log(`UPDATE user_customer SET ${setClause} WHERE id = $${fields.length + 1} Returning *`, [...values, userId])
         if (fields.length === 0) {
             return { error: true, message: 'Nothing to update' };
         } else {
             try {
-                await pool.query(`UPDATE user SET ${setClause} WHERE id = $${fields.length + 1}`, [...values, userId]);
-                return { error: false, message: 'Details updated' };
+                //this query below needs checking and also we need to return all the details. 
+                const updates = await pool.query(`UPDATE user_customer SET ${setClause} WHERE id = $${fields.length + 1} RETURNING id, email, first_name, last_name`, [...values, userId]);
+                console.log(updates);
+
+                if (updates.rows.length === 0) {
+                    return {error: true, message: 'error collecting changes' }
+                } 
+
+                return { error: false, message: 'Details updated', data: updates.rows[0] };
             } catch (error) {
                 return { error: true, message: error.message }
             }
         }
-    }
+    };
 
     async initCart() {
 
@@ -193,15 +219,15 @@ class Queries {
             if (cartExists.rows.length > 0) {
                 return this.cartDetails(userId);
             } else {
-                const newCartQuery = 'INSERT INTO cart (user_id) VALUES ($1) RETURNING *';
-                const newCart = await pool.query(newCartQuery, [this.schema.customerId]);
+                const newCartQuery = 'INSERT INTO cart (user_id, open) VALUES ($1, $2) RETURNING *';
+                const newCart = await pool.query(newCartQuery, [this.schema.customerId, true]);
                 return { error: false, exists: true, message: 'A cart has been opened', data: newCart.rows[0] };
             }
         } catch (error) {
             console.error({ message: 'Error contacting SQL to open cart', error });
             return { error: true, exists: false, message: 'Unable to open a new cart. Try block failed.' };
         }
-    }
+    };
 
     async cartDetails(customerId) {
         
@@ -220,7 +246,7 @@ class Queries {
             console.error({ message: 'Error in returning cart products at queries', error });
             return { error: true, message: 'Unable to return your cart at the moment. Please try again later.' };
         }
-    }
+    };
 
     async addProductToCart(addProducts) {
         const {customerId, product, quantity, price, name, url} = addProducts;
@@ -244,7 +270,7 @@ class Queries {
             console.error({ message: 'Error adding product to cart', error });
             return { error: true, message: 'Unable to add product to cart. Please try again later.' };
         }
-    }
+    };
 
     async amendCart(amendProducts) {
         const {customerId, products, quantity} = amendProducts;
@@ -263,7 +289,7 @@ class Queries {
             console.error({ message: 'Error adding product to cart', error });
             return { error: true, message: 'Unable to add product to cart, Please try again later.' };
         }
-    }
+    };
 
     async removeFromCart(deleteProducts) {
 
@@ -284,7 +310,7 @@ class Queries {
             console.error({ message: 'Error deleting product from cart', error });
             return { error: true, message: 'unable to delete product. Failed as query.' }
         }
-    }
+    };
 
     async checkout() {
         try {
@@ -323,7 +349,7 @@ class Queries {
         }
 
         //further details on processing payment to be added once I have handled the front end. I will need to do an insert statement into orders once complete. 
-    }
-}
+    };
+};
 
 module.exports = Queries;

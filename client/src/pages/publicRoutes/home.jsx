@@ -34,8 +34,6 @@ function Home() {
                 <div className={Styles.productcontainer}>
                     {products.map((product) => {
                         return (
-
-                            
                             <ProductCard
                                 key={product.id}
                                 id={product.id}

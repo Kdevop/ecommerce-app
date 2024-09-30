@@ -135,7 +135,7 @@ function Header() {
                         </ul>
                     ) : (
                         <ul className={styles.register}>
-                        <li><NavLink to='/'>Some stuff to do with users!</NavLink></li>
+                        <li><NavLink to='/account'>Account Details</NavLink></li>
                         <li><NavLink to='/logout'>Logout</NavLink></li>
                     </ul>
                     )}

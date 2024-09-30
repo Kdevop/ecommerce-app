@@ -1,6 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const { registerUser, userOrders, orderDetails, getUserDetails, updateUser } = require('../controllers/user');
+const { isAuth } = require('../controllers/auth');
 
 //endpoint for register
 const registerRouter = express.Router();
@@ -54,16 +55,16 @@ logoutRouter.post('/', (req, res, next) => {
 //end point for user orders
 const orderRouter = express.Router();
 //end point for user purchase history
-orderRouter.get('/:userId', userOrders);
+orderRouter.get('/:userId', isAuth, userOrders);
 //end point for details on a single order
-orderRouter.get('/:orderId', orderDetails);
+orderRouter.get('/:orderId', isAuth, orderDetails);
 
 // end point for customer details
 const userRouter = express.Router();
 //end point for user details
-userRouter.get('/:userId', getUserDetails);
+userRouter.get('/userId', isAuth, getUserDetails);
 //end point for updating user details
-userRouter.put(`/:userId`, updateUser);
+userRouter.put(`/userId`, isAuth, updateUser);
 
 // exports
 module.exports = {

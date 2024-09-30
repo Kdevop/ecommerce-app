@@ -11,6 +11,7 @@ import storage from "redux-persist/lib/storage";
 import authSlice from './authSlice';
 import productSlice from './productSlice';
 import cartSlice from './cartSlice';
+import userSlice from './userSlice';
 import { thunk as thunkMiddleWare } from 'redux-thunk';
 
  const authPersistConfig = {
@@ -22,6 +23,7 @@ import { thunk as thunkMiddleWare } from 'redux-thunk';
     auth: persistReducer(authPersistConfig, authSlice),
     products: productSlice,
     cart: cartSlice,
+    user: userSlice,
 })
 
 export const store = configureStore({

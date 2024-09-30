@@ -12,10 +12,12 @@ import { addToCart, cartUpdate, cartData } from '../../reduxStore/cartSlice';
 function ProductDetails() {
     const [loginMessage, setLogginMessage] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [inCart, setInCart] = useState(false);
 
     const dispatch = useDispatch();
     const location = useLocation();
-
+    const cart = useSelector(cartData);
+    
     const { id } = useParams();
     const product = useSelector(singleProdReturned);
     const isAuthenticated = useSelector(userAuthDone);
@@ -24,7 +26,7 @@ function ProductDetails() {
         if (location.pathname === `/products/${id}`) {
             dispatch(getProductById(id));
         }
-    }, [dispatch, location.pathname]);
+    }, [dispatch, location.pathname, id]);
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -51,12 +53,11 @@ function ProductDetails() {
 
         console.log(add);
 
-        // if(cartUpdate) 
-
-        // }
-
     }
 
+    // if (cart.data.product_id && cart.data.product_id === product.product.id) {
+    //     setInCart(true);
+    // }
 
     if (product.length === 0) {
         return (
@@ -83,7 +84,14 @@ function ProductDetails() {
                     <h4>{product.price}</h4>
                 </div>
                 <div className={Styles.cart}>
-                    <Button fullWidth type='submit' variant='contained' color='primary' className={Styles.button} onClick={onSubmit} >Buy this!</Button>
+
+                    {inCart ? (
+                        <p>This product is in your cart. If you want t buy more than one, you can do this in your cart.</p>
+                    ) : (
+                        <Button fullWidth type='submit' variant='contained' color='primary' className={Styles.button} onClick={onSubmit} >Buy this!</Button>
+                    ) }
+
+                    
                 </div>
                 {loginMessage? (
                                 <div>

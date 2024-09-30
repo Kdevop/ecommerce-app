@@ -160,4 +160,43 @@ export const deleteProduct = async(product) => {
 
     const json = await response.json();
     return json;
+};
+
+export const getUser = async () => {
+    
+    const response  = await fetch (`${API_ROOT}/users/details/userId`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application.json'
+        },
+
+        credentials: 'include',
+
+    });
+
+    const json = await response.json();
+    return json;
+};
+
+export const userChanges = async (details) => {
+    const updates = details;
+
+    console.log(`These are the updates in the userChanges ${updates}`);
+
+    const detailsToSend = JSON.stringify(updates)
+
+    console.log(`These are the detailsToSend JSON'd updates ${detailsToSend}`);
+
+        const response = await fetch (`${API_ROOT}/users/details/userId`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: detailsToSend,
+        
+        credentials: 'include',
+    });
+
+    const json = await response.json();
+    return json;
 }

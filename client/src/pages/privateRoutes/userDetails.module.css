@@ -1,0 +1,17 @@
+
+.container{
+    margin-top: 17.5px;
+}
+
+.topcontainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.compcontainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5%;
+    justify-content:space-between;
+}

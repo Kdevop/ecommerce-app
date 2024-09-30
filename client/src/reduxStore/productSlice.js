@@ -21,6 +21,8 @@ export const getProductById = createAsyncThunk('product/getProductById', async (
     try {
         const response = await productById(id);
 
+        console.log(response);
+
         if(!response.success) {
             console.warn(`Unable to get product: ${response.message}`);
             return rejectWithValue(response.message);
