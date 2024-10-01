@@ -1,6 +1,6 @@
 const express = require('express');
 const passport = require('passport');
-const { registerUser, userOrders, orderDetails, getUserDetails, updateUser } = require('../controllers/user');
+const { registerUser, userOrders, orderDetails, getUserDetails, updateUser, addAddress, editAddress } = require('../controllers/user');
 const { isAuth } = require('../controllers/auth');
 
 //endpoint for register
@@ -65,6 +65,8 @@ const userRouter = express.Router();
 userRouter.get('/userId', isAuth, getUserDetails);
 //end point for updating user details
 userRouter.put(`/userId`, isAuth, updateUser);
+userRouter.post('/address', isAuth, addAddress);
+userRouter.put('/address', isAuth, editAddress);
 
 // exports
 module.exports = {

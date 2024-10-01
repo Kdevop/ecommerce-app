@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getUser, userChanges } from '../apis/apiRequest';
+import { getUser, userChanges, newAddress, editAddress } from '../apis/apiRequest';
 
 export const userDetails = createAsyncThunk('user/userDetails', async (_, {rejectWithValue}) => {
     try {
@@ -37,6 +37,41 @@ export const updateDetails = createAsyncThunk('user/updateDetails', async (crede
         return rejectWithValue(error.message);
     }
 });
+
+export const addAddress = createAsyncThunk('user/addAddress', async (address, {rejectWithValue}) => {
+
+    try{
+        const response = await newAddress(address);
+
+        if(!response.success) {
+            console.warn('Something went wrong adding the address: ', response.message);
+            return rejectWithValue(response.message);
+        } else {
+            return response;
+        }
+    } catch (error) {
+        console.warn('Error adding the address: ', error);
+        return rejectWithValue(error.message);
+    }
+})
+
+export const updateAddress = createAsyncThunk('user/updateAddress', async (address, {rejectWithValue}) => {
+
+    try{
+        const response = await editAddress(address);
+
+        if(!response.success) {
+            console.warn('Something went wrong updating the address: ', response.message);
+            return rejectWithValue(response.message);
+        } else {
+            return response;
+        }
+
+    } catch (error) {
+        console.warn('Error editing the address: ', error);
+        return rejectWithValue(error.message);
+    }
+})
 
 
 const initialState = {
@@ -83,6 +118,32 @@ const userSlice = createSlice({
                 state.data.userData = action.payload.data;
             })
             .addCase(updateDetails.rejected, (state) => {
+                state.updateUserInit = false;
+                state.userError = true;
+            })
+            .addCase(addAddress.pending, (state) => {
+                state.updateUserInit = true;
+            })
+            .addCase(addAddress.fulfilled, (state, action) => {
+                state.updateUserInit = false;
+                state.userUpdated = true;
+                state.userAddress = true;
+                state.data.userAddress = action.payload.data;
+            })
+            .addCase(addAddress.rejected, (state) => {
+                state.updateUserInit = false;
+                state.userError = true;
+            })
+            .addCase(updateAddress.pending, (state) => {
+                state.updateUserInit = true;
+            })
+            .addCase(updateAddress.fulfilled, (state, action) => {
+                state.updateUserInit = false;
+                state.userUpdated = true;
+                state.userAddress = true;
+                state.data.userAddress = action.payload.data;
+            })
+            .addCase(updateAddress.rejected, (state) => {
                 state.updateUserInit = false;
                 state.userError = true;
             })

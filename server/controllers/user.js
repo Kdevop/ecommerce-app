@@ -2,8 +2,9 @@ const bcrypt = require('bcrypt');
 const Queries = require('../db/queries');
 const passport = require('passport');
 
-const userQuerySchema = { name: 'user', userDetails: '', userAddress: '', userData: '', userAddress: '' };
+const userQuerySchema = { name: 'user', userDetails: '', userAddress: '', userData: '' };
 const ordersQuerySchema = { name: 'orders', userDetails: '' };
+const addressQuerySchema = {name: 'address', }
 
 const userQueries = new Queries(userQuerySchema);
 const ordersQueries = new Queries(ordersQuerySchema);
@@ -126,7 +127,7 @@ const updateUser = async (req, res) => {
     try {
         const result = await userQueries.updateUserDetails( changes, userId );
         if (result.error) {
-            return res.status(400).json({success: false, message: result.message, data: result})
+            return res.status(400).json({success: false, message: result.message, data: result});
         } else {
             res.status(200).json({ success: true, message: 'User details updated successfully', data: result.data });
         }
@@ -138,10 +139,53 @@ const updateUser = async (req, res) => {
 
 }
 
+const addAddress = async (req, res) => {
+    const userId = req.session.passport.user;
+    const newAddress = req.body;
+
+    console.log('This is the address on line 146',  newAddress);
+
+    try{
+        const result = await userQueries.inputAddress( newAddress, userId );
+
+        if(result.error) {
+            return res.status(400).json({ success: false, message: result.message, data: result });
+        } else {
+            res.status(200).json({success: true, message: 'Address added successfuly', data: result.data });
+        }
+
+    } catch (error) {
+        console.error('Error updating user details: ', error);
+        res.status(500).json({ success: false, message: 'Error adding address', error: error.message });
+    }
+}
+
+const editAddress = async (req, res) => {
+    const userId = req.session.passport.user;
+    const newAddress = req.body;
+
+    console.log('This is the address on line 167', newAddress);
+
+    try{
+        const result = await userQueries.amendAddress( newAddress, userId );
+
+        if(result.error) {
+            return res.status(400).json({ success: false, message: result.message, data: result });
+        } else {
+            res.status(200).json({ success: true, message: 'Address amended successfuly', data: result.data });
+        }
+    } catch (error) {
+        console.error('Error updating address: ', error);
+        res.status(500).json({ success: false, message: 'Error updating address', error: error.message });
+    }
+}
+
 module.exports = {
     registerUser,
     userOrders,
     orderDetails,
     getUserDetails,
     updateUser,
+    addAddress,
+    editAddress,
 };

@@ -128,7 +128,7 @@ function Registration() {
                                 </div>
                             )}
                             <div>
-                                <Typography>Already have an account? Click here to <NavLink to='/signin'>Sign in!</NavLink></Typography>
+                                <Typography>Already have an account? Click here to <NavLink to='/login'>Sign in!</NavLink></Typography>
                             </div>
                         </Form>
                     )}

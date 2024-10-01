@@ -16,6 +16,8 @@ function UserDetails() {
     const isAuthenticated = useSelector(userAuthDone);
     const dataForAccount = useSelector(userData);
     const dataCheckAccount = useSelector(userDataReturned);
+    const dataCheckAddress = useSelector(addressReturned);
+    const dataforAddress = useSelector(addressData);
     const userErrorCheck = useSelector(userError);
     const dispatch = useDispatch();
     const location = useLocation();
@@ -39,14 +41,16 @@ function UserDetails() {
                 <Paper className={Styles.container}>
                     <div className={Styles.topcontainer}>
                         <div>
-                            <h2 className={Styles.heading}>Hi {userAuthData.user.firstName} {userAuthData.user.lastName},</h2>
+                            <h2 className={Styles.heading}>Hi {dataForAccount.first_name} {dataForAccount.last_name},</h2>
                             <p>These are your details.</p>
                         </div>
                         <a href='/account'>Go back!<ReplyIcon /></a>
                     </div>
                     <div className={Styles.compcontainer}>
                         <Address 
-                        addressData={addressData}
+                        data={dataforAddress}
+                        dataCheck={dataCheckAddress}
+                        userError={userErrorCheck}
                         />
                         <UserAccount 
                         data={dataForAccount}

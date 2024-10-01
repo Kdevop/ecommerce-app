@@ -197,7 +197,7 @@ class Queries {
                 console.log(updates);
 
                 if (updates.rows.length === 0) {
-                    return {error: true, message: 'error collecting changes' }
+                    return {error: true, message: 'Error collecting changes' }
                 } 
 
                 return { error: false, message: 'Details updated', data: updates.rows[0] };
@@ -206,6 +206,65 @@ class Queries {
             }
         }
     };
+
+    async inputAddress(newAddress, userId) {
+        const user = userId;
+        const {address_line_1, address_line_2, city, county, post_code} = newAddress;
+
+        console.log( 'This is the address in queries', newAddress);
+
+        if (!address_line_1 || !address_line_2 || !city || !county || !post_code) {
+            return { error: true, message: "All fields are required - failed at db.queries." };
+        }
+
+        try {
+            const addAddress = await pool.query(
+                `INSERT INTO "billing_address" ("user_id", "address_line1", "address_line2", "city", "county", "post_code") VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+                [user, address_line_1, address_line_2, city, county, post_code]
+            );
+
+            console.log(addAddress);
+
+            if(addAddress.rows.length === 0) {
+                return {error: true, message: 'Error adding address'};
+            }
+
+            return { error: false, message: 'Address added', data: addAddress.rows[0] };
+
+        } catch (error) {
+            return { error: true, message: error.message };
+        }
+    };
+
+    async amendAddress(newAddress, userId) {
+        const user = userId;
+        const {address_line_1, address_line_2, city, county, post_code} = newAddress;
+
+        console.log('This is the address in queries: ', newAddress);
+
+        if (!address_line_1 || !address_line_2 || !city || !county || !post_code) {
+            return { error: true, message: "All fields are required - failed at db.queries." };
+        }
+
+        try{
+            const editAddress = await pool.query(
+                `UPDATE billing_address SET address_line1 = $1, address_line2 = $2, city = $3, county = $4, post_code = $5 WHERE user_id = $6 RETURNING *`, 
+                [address_line_1, address_line_2, city, county, post_code, user]
+            );
+
+            console.log(editAddress);
+
+            if (editAddress.rows.length === 0) {
+                return {error: true, message: "Error editing address"};
+            }
+
+            return { error: false, message: "Address amended", data: editAddress.rows[0] };
+
+        } catch (error) {
+            return { error: true, message: error.message };
+        }
+        
+    }
 
     async initCart() {
 

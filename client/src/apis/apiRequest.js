@@ -199,4 +199,50 @@ export const userChanges = async (details) => {
 
     const json = await response.json();
     return json;
-}
+};
+
+export const newAddress = async (address) => {
+    const {address_line_1, address_line_2, city, county, post_code} = address;
+
+    const response = await fetch (`${API_ROOT}/users/details/address`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            address_line_1,
+            address_line_2,
+            city,
+            county,
+            post_code
+        }),
+        credentials: 'include',
+    });
+
+    const json = await response.json();
+    return json;
+};
+
+export const editAddress = async (address) => {
+    const {address_line_1, address_line_2, city, county, post_code} = address;
+
+    const response = await fetch (`${API_ROOT}/users/details/address`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            address_line_1,
+            address_line_2,
+            city,
+            county,
+            post_code
+        }),
+        credentials: 'include',
+    });
+
+    const json = await response.json();
+    return json;
+};
+
+
