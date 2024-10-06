@@ -31,8 +31,8 @@ class Queries {
                 try {
                     const id = user.rows[0].id;
 
-                    const newCartQuery = 'INSERT INTO cart (user_id) VALUES ($1) RETURNING *';
-                    const newCart = await pool.query(newCartQuery, [id])
+                    const newCartQuery = 'INSERT INTO cart (user_id, open) VALUES ($1, $2) RETURNING *';
+                    const newCart = await pool.query(newCartQuery, [id, true])
 
                     return {
                         error: false, registered: true, cart: true, message: 'You are registered and a cart intitialized', data: {
@@ -42,6 +42,7 @@ class Queries {
                     }
 
                 } catch (error) {
+                    console.log('This is the error we are getting on the cart: ', error)
                     return {
                         error: true, registered: true, cart: false, message: 'You are registered but a cart could not be initialized.', data: {
                             user: user.rows[0]
@@ -107,7 +108,11 @@ class Queries {
     async ordersOverview(userId) {
         try {
             const result = await pool.query('SELECT * FROM orders WHERE user_id = $1', [userId]);
-            return { error: false, data: result.rows };
+
+            if (result.rows.length === 0) {
+                return { error: false, hasOrders: false, data: result.rows}
+            }
+            return { error: false, hasOrders: true, data: result.rows };
         } catch (error) {
             console.error({ message: 'Error collecint orders: ', error });
             return { error: true, message: error.message };
@@ -116,8 +121,16 @@ class Queries {
 
     async orderIdDetails(orderId) {
         try {
-            const result = await pool.query('SELECT * FROM orders INNER JOIN checkout ON orders.checkout_id = checkout.id WHERE orders.id = $1', [orderId]);
-            return { error: false, data: result.rows[0] };
+
+            //you might need more work here, because you will want the products and for those you need to get to cart_products
+            const checkout = await pool.query('SELECT * FROM orders INNER JOIN checkout ON orders.checkout_id = checkout.id INNER JOIN shipping_address ON checkout.shipping_address_id = shipping_address.id WHERE orders.id = $1', [orderId]);
+            console.log(checkout);
+
+            const cartId = checkout.rows[0].cart_id;
+
+            const products = await pool.query('SELECT * FROM cart_products WHERE cart_id = $1', [cartId]);
+
+            return { error: false, checkout: checkout.rows[0], product: products.rows };
         } catch (error) {
             console.error({ message: 'Error collecting order details', error });
             return { error: true, message: error.message };
@@ -294,7 +307,7 @@ class Queries {
             const cartProdQuery = `SELECT * FROM cart
                                     INNER JOIN cart_products
                                     ON cart.id = cart_products.cart_id
-                                    WHERE user_id = $1`;
+                                    WHERE user_id = $1 AND cart.open = true`;
             const cartProducts = await pool.query(cartProdQuery, [customerId.customerId]);
             if (cartProducts.rows.length === 0) {
                 return { error: false, hasProd: false, message: 'There are no products in your cart', data: cartProducts.rows };

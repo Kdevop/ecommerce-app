@@ -11,7 +11,7 @@ export const getCart = createAsyncThunk('cart/getCart', async (_, { rejectWithVa
             return rejectWithValue(response.message);
         }
 
-        return response
+        return response 
 
     } catch (error) {
         console.error('Error collecting cart', error);
@@ -28,7 +28,6 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (productDetail
             return rejectWithValue(response.message)
         }
 
-        console.log(response);
         return response;
 
     } catch (error) {

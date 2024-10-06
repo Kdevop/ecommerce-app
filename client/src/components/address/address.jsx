@@ -16,9 +16,16 @@ const validationSchema = Yup.object().shape({
     post_code: Yup.string().required('This feild is required.'),
 });
 
-function Address(props) {
+function Address(props) { 
     const dispatch = useDispatch();
-    const [showEdit, setShowEdit] = useState(false);
+    const [isShowEdit, setIsShowEdit] = useState(false);
+
+    const showEdit = {
+        transition: 'all 0.6s ease-in-out',
+        transform: isShowEdit ? 'translateY(0)' : 'translateY(-300%)',
+        position: 'absolute',
+        zIndex: isShowEdit ? 1000 : -1000,
+    };
 
     const onSubmit = async (values, actions) => {
 
@@ -49,7 +56,7 @@ function Address(props) {
     }
 
     const editAddress = () => {
-        setShowEdit(!showEdit);
+        setIsShowEdit(!isShowEdit);
     }
 
     if (props.dataCheck) {
@@ -57,6 +64,9 @@ function Address(props) {
         return (
             <Paper>
                 <div>
+                    <div style={showEdit}>
+                        <EditAddress />
+                    </div>
                     <div>Address will go here</div>
                     <p>This is the first line of the address: {props.data.address_line1}</p>
                     <p>This is the second line of the address: {props.data.address_line2}</p>
@@ -71,13 +81,6 @@ function Address(props) {
 
                 <hr />
 
-                {showEdit ? (
-                    <div>
-                        <EditAddress />
-                    </div>
-                ) : (
-                    null
-                )}
 
             </Paper>
         )

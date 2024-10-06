@@ -1,0 +1,12 @@
+.button {
+    border: 1px, solid, black;
+    border-radius: 10px;
+    line-height: 50px;
+    padding: 50px 80px 80px 50px;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    font-size: 30px;
+    color: black;
+}

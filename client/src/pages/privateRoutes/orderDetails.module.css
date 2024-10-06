@@ -1,0 +1,13 @@
+.orderDetails {
+    margin-top: 17.5px;
+}
+
+.headingContainer {
+    display: flex;
+    justify-content: space-between;    
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+}

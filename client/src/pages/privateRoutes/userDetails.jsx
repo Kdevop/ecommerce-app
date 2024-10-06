@@ -8,7 +8,7 @@ import { authData, userAuthDone } from '../../reduxStore/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate, NavLink } from 'react-router-dom';
 import { userDetails, userReturned, userDataReturned, userData, addressReturned, addressData, userError } from '../../reduxStore/userSlice';
-
+import Footer from '../../components/footer/footer';
 
 function UserDetails() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,13 +29,13 @@ function UserDetails() {
         }
     }, [navigate, isAuthenticated]);
 
-    useEffect(()  => {
+    useEffect(() => { 
         if (isAuthenticated && location.pathname === '/userdetails') {
             dispatch(userDetails());
         }
     }, [dispatch, location.pathname, isAuthenticated]);
 
-    return (
+    return ( 
         <div>
             {isAuthenticated ? (
                 <Paper className={Styles.container}>
@@ -47,18 +47,19 @@ function UserDetails() {
                         <a href='/account'>Go back!<ReplyIcon /></a>
                     </div>
                     <div className={Styles.compcontainer}>
-                        <Address 
-                        data={dataforAddress}
-                        dataCheck={dataCheckAddress}
-                        userError={userErrorCheck}
+                        <Address
+                            data={dataforAddress}
+                            dataCheck={dataCheckAddress}
+                            userError={userErrorCheck}
                         />
-                        <UserAccount 
-                        data={dataForAccount}
-                        datacheck={dataCheckAccount}
-                        //userCheck={userReturned}
-                        userError={userErrorCheck}
+                        <UserAccount
+                            data={dataForAccount}
+                            datacheck={dataCheckAccount}
+                            //userCheck={userReturned}
+                            userError={userErrorCheck}
                         />
                     </div>
+
                 </Paper>
             ) : (
                 <Paper>
@@ -70,8 +71,11 @@ function UserDetails() {
                             <li><NavLink to='/login'>Login</NavLink></li>
                         </ul>
                     </div>
+
                 </Paper>
             )}
+
+            <Footer />
         </div>
     );
 };

@@ -57,7 +57,7 @@ const orderRouter = express.Router();
 //end point for user purchase history
 orderRouter.get('/:userId', isAuth, userOrders);
 //end point for details on a single order
-orderRouter.get('/:orderId', isAuth, orderDetails);
+orderRouter.get('/details/:orderId', isAuth, orderDetails); 
 
 // end point for customer details
 const userRouter = express.Router();

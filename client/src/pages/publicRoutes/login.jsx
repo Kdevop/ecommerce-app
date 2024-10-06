@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { loginUser, authData, userAuthLoading, userAuthError, userAuthDone } from '../../reduxStore/authSlice';
+import { loginUser, authData, userAuthLoading, userAuthError, userAuthDone, errorData } from '../../reduxStore/authSlice';
 import { getCart } from '../../reduxStore/cartSlice';
 
 const validationSchema = Yup.object().shape({
@@ -18,9 +18,11 @@ const validationSchema = Yup.object().shape({
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [signedIn, setSignedIn] = useState(false);
+    const [error, setError] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const message = useSelector(authData);
+    const message = useSelector(errorData);
     const signInComplete = useSelector(userAuthDone);
     const signInError = useSelector(userAuthError);
 
@@ -42,7 +44,7 @@ function Login() {
             console.log(signin);
             console.log(signInComplete);
 
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, 2500));
             console.log(signInComplete);
             
         } catch (err) {
@@ -54,18 +56,28 @@ function Login() {
     }
 
     useEffect(() => {
-        if(signInComplete) {
-            
-            alert("You are signed in!") //change these alerts from a pop up to something else. 
-            dispatch(getCart());
+        const fetchData = async () => {
+            if (signInComplete) {
 
-            navigate('/');
-        }
-
-        if (signInError) {
-            alert(`${message}`);
-        }
-    }, [signInComplete, signInError, dispatch])
+                setError(false);
+                setSignedIn(true);
+                              
+                dispatch(getCart());
+                
+                await new Promise(resolve => setTimeout(resolve, 2500));
+                navigate('/');
+            }
+    
+            if (signInError) {
+                //alert(`${message}`);
+                setSignedIn(false);
+                setError(true);
+                
+            }
+        };
+    
+        fetchData();
+    }, [signInComplete, signInError, dispatch]);
 
     return (
         <Grid className={styles.registration}>
@@ -76,6 +88,18 @@ function Login() {
                     </Avatar>
                     <h3 className={styles.header}>Sign In</h3>
                     <Typography varient='caption'>To sign in, complete the form.</Typography>
+                    {signedIn ? (
+                        <p>You are signed in!</p>
+                    ) : (
+                        null
+                    )}
+
+                    {error ? (
+                        <p className={styles.error}>Error signing in: {message}</p>
+                    ) : (
+                        null
+                    )}
+
                 </Grid>
                 <Formik
                     initialValues={{

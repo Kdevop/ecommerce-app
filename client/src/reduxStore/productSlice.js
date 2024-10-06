@@ -15,13 +15,11 @@ export const getProducts = createAsyncThunk('products/getProducts', async (_, { 
         console.error('Error getting products', error);
         return rejectWithValue(error.message);
     }
-});
+}); 
 
 export const getProductById = createAsyncThunk('product/getProductById', async (id, {rejectWithValue}) => {
     try {
         const response = await productById(id);
-
-        console.log(response);
 
         if(!response.success) {
             console.warn(`Unable to get product: ${response.message}`);
@@ -92,7 +90,7 @@ const productSlice = createSlice({
             .addCase(getProductById.rejected, (state, action) => {
                 state.isLoading = false; 
                 state.error = true;
-            })
+            }) 
             .addCase(getProductByCategory.pending, (state, action) => {
                 state.isLoading = true;
             })

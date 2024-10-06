@@ -1,0 +1,8 @@
+.orders {
+    margin-top: 17.5px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+} 

@@ -15,7 +15,7 @@ function Home() {
     const products = useSelector(productsReturned);
 
     useEffect(() => {
-        if (location.pathname === '/') {
+        if (products.length === 0 && location.pathname === '/') {
             dispatch(getProducts());
         }
     }, [dispatch, location.pathname]);

@@ -60,16 +60,19 @@ const registerUser = async (req, res) => {
 const userOrders = async (req, res) => {
     const { userId } = req.params;
 
-    if (req.user === userId) {
+    const Id = req.session.passport.user
+
+    if (Id === userId) { 
         try {
             const result = await ordersQueries.ordersOverview(userId);
-            if (result.length === 0) {
-                res.status(404).json({ success: true, message: 'No previous order', data: 0 });
+            if (!result.error) {
+                res.status(200).json({ success: true, hasOrders: result.hasOrders, message: 'Customer orders returned', data: result.data });
             } else {
-                res.status(200).json({ success: true, message: 'Customer orders returned', data: result.data });
+                res.status(400).json({ success: false, message: result.message})
             }
         } catch (error) {
             console.error('Error getting customer orders: ', error);
+            res.status(500).json({ success: false, message: 'An error occured collecting the customer orders', data: result})
         }
     } else {
         res.status(401).json({ success: false, message: 'Please login.' })
@@ -80,10 +83,10 @@ const orderDetails = async (req, res) => {
     const { orderId } = req.params;
     try {
         const result = await ordersQueries.orderIdDetails(orderId);
-        if (result.error) {
+        if (result.error) { 
             res.status(400).json({ success: false, message: result, message });
         } else {
-            res.status(200).json({ success: true, message: 'Order details returned', result: result.data });
+            res.status(200).json({ success: true, message: 'Order details returned', checkout_data: result.checkout, products_data: result.product });
         }
     } catch (error) {
         console.error('Error getting customer order details: ', error);

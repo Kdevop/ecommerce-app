@@ -16,6 +16,10 @@ function Cart() {
     const cart = useSelector(cartData);
 
     useEffect(() => {
+        dispatch(getCart());
+    }, []);
+
+    useEffect(() => {
         if (haveCart) {
 
             if (!cart.hasProd) { 

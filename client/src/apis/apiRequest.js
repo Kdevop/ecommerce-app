@@ -42,7 +42,7 @@ export const logout = async () => {
     const response = await fetch(`${API_ROOT}/users/logout`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application.json',
+            'Content-Type': 'application/json',
 
         },
         credentials: 'include',
@@ -56,7 +56,7 @@ export const productInit = async () => {
     const response = await fetch (`${API_ROOT}/products`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application.json'
+            'Content-Type': 'application/json'
         }
     });
 
@@ -69,7 +69,7 @@ export const productById = async (id) => {
     const response = await fetch (`${API_ROOT}/products/id/${id}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application.json'
+            'Content-Type': 'application/json'
         },
 
     });
@@ -82,7 +82,7 @@ export const productByCat = async (category) => {
     const response = await fetch (`${API_ROOT}/products/category/${category}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application.json'
+            'Content-Type': 'application/json'
         },
 
     });
@@ -95,7 +95,7 @@ export const customerCart = async () => {
     const response = await fetch (`${API_ROOT}/cart/` , {
         method: 'GET',
         headers: {
-            'Content-Type': 'application.json',
+            'Content-Type': 'application/json',
 
         },
         credentials: 'include',
@@ -151,7 +151,7 @@ export const deleteProduct = async(product) => {
     const response = await fetch (`${API_ROOT}/cart/item/${product}`, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application.json'
+            'Content-Type': 'application/json'
         },
 
         credentials: 'include',
@@ -167,7 +167,7 @@ export const getUser = async () => {
     const response  = await fetch (`${API_ROOT}/users/details/userId`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application.json'
+            'Content-Type': 'application/json'
         },
 
         credentials: 'include',
@@ -244,5 +244,31 @@ export const editAddress = async (address) => {
     const json = await response.json();
     return json;
 };
+
+export const userOrders = async (id) => {
+    const response = await fetch(`${API_ROOT}/users/orders/${id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+    });
+
+    const json = await response.json();
+    return json;
+};
+
+export const orderById = async (id) => {
+    const response = await fetch(`${API_ROOT}/users/orders/details/${id}`, {
+        medthod: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+    });
+
+    const json = await response.json();
+    return json;
+}
 
 

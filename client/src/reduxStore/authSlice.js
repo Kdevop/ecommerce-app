@@ -57,7 +57,10 @@ const initialState = {
     isUserLoading: false,
     isRegistered: false,
     isAuthenticated: false,
-    error: false,
+    errorLogin: false,
+    errorRegister: false,
+    errorData: [],
+    errorReg: [],
     data: []
 };
 
@@ -78,8 +81,8 @@ const authSlice = createSlice({
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.isUserLoading = false;
-                state.error = true;
-                state.data = action.payload;
+                state.errorRegister = true;
+                state.errorReg = action.payload;
             })
             .addCase(loginUser.pending, (state) => {
                 state.isUserLoading = true;
@@ -92,8 +95,8 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.isUserLoading = false;
-                state.error = true;
-                state.data = action.payload;
+                state.errorLogin = true;
+                state.errorData = action.payload;
             })
             .addCase(logoutUser.pending, (state) => {
                 state.isUserLoading = true;
@@ -113,6 +116,9 @@ const authSlice = createSlice({
 export default authSlice.reducer;
 export const authData = state => state.auth.data;
 export const userAuthLoading = state => state.auth.isUserLoading;
-export const userAuthError = state => state.auth.error;
+export const userAuthError = state => state.auth.errorLogin;
+export const userRegisterError = state => state.auth.errorRegister;
 export const userAuthDone = state => state.auth.isAuthenticated;
 export const userRegDone = state => state.auth.isRegistered;
+export const errorData = state => state.auth.errorData;
+export const errorReg = state => state.auth.errorReg;

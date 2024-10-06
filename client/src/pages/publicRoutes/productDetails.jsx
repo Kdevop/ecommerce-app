@@ -17,7 +17,7 @@ function ProductDetails() {
     const dispatch = useDispatch();
     const location = useLocation();
     const cart = useSelector(cartData);
-    
+
     const { id } = useParams();
     const product = useSelector(singleProdReturned);
     const isAuthenticated = useSelector(userAuthDone);
@@ -34,10 +34,36 @@ function ProductDetails() {
         } else {
             setIsLoggedIn(false);
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, setIsLoggedIn]);
+
+
+
+    useEffect(() => {
+
+        if (isLoggedIn) {
+            setInCart(false);
+
+            console.log(cart);
+
+            const cartCheck = cart.data;
+
+            console.log(cartCheck);
+
+
+            if (Array.isArray(cartCheck)) {
+                const isProductInCart = cartCheck.some(cart => cart.product_id === product.id);
+
+                console.log(isProductInCart);
+
+                if (isProductInCart) {
+                    setInCart(true);
+                }
+            }
+        }
+    }, [cart, product, isLoggedIn]);
 
     const onSubmit = async () => {
-        if(!isLoggedIn) {
+        if (!isLoggedIn) {
             setLogginMessage(true)
         }
 
@@ -46,7 +72,7 @@ function ProductDetails() {
             quantity: 1,
             price: product.price,
             name: product.name,
-            url: product.image_url,  
+            url: product.image_url,
         }
 
         const add = await dispatch(addToCart(productDetails));
@@ -86,20 +112,20 @@ function ProductDetails() {
                 <div className={Styles.cart}>
 
                     {inCart ? (
-                        <p>This product is in your cart. If you want t buy more than one, you can do this in your cart.</p>
+                        <p>This product is in your cart. If you want to buy more than one, you can do this in your cart.</p>
                     ) : (
                         <Button fullWidth type='submit' variant='contained' color='primary' className={Styles.button} onClick={onSubmit} >Buy this!</Button>
-                    ) }
+                    )}
 
-                    
+
                 </div>
-                {loginMessage? (
-                                <div>
-                                <p>You need to be logged in to add to your cart.</p>
-                                <p>Click here to <NavLink to='/register'>Register!</NavLink></p>
-                                <p>Click here to <NavLink to='/login'>Sign In!</NavLink></p>
-                            </div>
-                ): (
+                {loginMessage ? (
+                    <div>
+                        <p>You need to be logged in to add to your cart.</p>
+                        <p>Click here to <NavLink to='/register'>Register!</NavLink></p>
+                        <p>Click here to <NavLink to='/login'>Sign In!</NavLink></p>
+                    </div>
+                ) : (
                     null
                 )}
             </div>

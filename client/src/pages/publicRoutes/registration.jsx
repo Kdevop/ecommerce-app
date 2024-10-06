@@ -1,5 +1,5 @@
 // import dependencies
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../publicRoutes/registration.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import { Formik, Form, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { registerUser, authData, userAuthLoading, userAuthError, userRegDone } from '../../reduxStore/authSlice';
+import { registerUser, authData, userAuthLoading, userRegisterError, userRegDone, errorReg } from '../../reduxStore/authSlice';
 
 const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
@@ -22,11 +22,13 @@ const validationSchema = Yup.object().shape({
 
 function Registration() {
     const [showPassword, setShowPassword] = useState(false);
+    const [registered, setRegistered] = useState(false);
+    const [error, setError] = useState(false);    
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const message = useSelector(authData);
+    const message = useSelector(errorReg);
     const registerComplete = useSelector(userRegDone);
-    const registerError = useSelector(userAuthError);
+    const registerError = useSelector(userRegisterError);
     
     const handlePassVisibility = () => {
         setShowPassword(!showPassword)
@@ -44,16 +46,24 @@ function Registration() {
         try {
             const register = await dispatch(registerUser(credentials));
             console.log(register)
-                        
-            if (registerComplete) {
-                alert('You are registered.');
-                navigate('/login');
-            }
-
-            if(registerError) {
-                alert(`${message}`);
-            }
             
+            await new Promise(resolve => setTimeout(resolve, 2500))
+
+            // if (registerComplete) {
+            //     //alert('You are registered.');
+            //     setError(false)
+            //     setRegistered(true);
+                
+            //     await new Promise(resolve => setTimeout(resolve, 2500))
+            //     navigate('/login');
+            // }
+
+            // if(registerError) {
+            //     setRegistered(false);
+            //     setError(true);
+                
+            //     //alert(`${message}`);
+            // }
             
         } catch (err) {
             console.error(err);
@@ -62,6 +72,25 @@ function Registration() {
         
         actions.resetForm()
     }
+
+    useEffect(() => {
+        const fetchingData = async () => {
+            if(registerComplete) {
+                setError(false);
+                setRegistered(true);
+
+                await new Promise (resolve => setTimeout(resolve, 2500));
+                navigate('/login');
+            }
+
+            if(registerError) {
+                setRegistered(false);
+                setError(true);
+            }
+        };
+
+        fetchingData();
+    }, [registerComplete, registerError])
 
     return (
         <Grid className={styles.registration}>
@@ -72,6 +101,17 @@ function Registration() {
                     </Avatar>
                     <h3 className={styles.header}>Sign Up</h3>
                     <Typography varient='caption'>To create an account, complete the form.</Typography>
+                    {registered ? (
+                        <p>You are registered and will be recirected to the sign in page.</p>
+                    ) : (
+                        null
+                    )}
+
+                    {error ? (
+                        <p className={styles.error}>Error registering: {message}</p>
+                    ) : (
+                        null
+                    )}
                 </Grid>
                 <Formik
                     initialValues={{
