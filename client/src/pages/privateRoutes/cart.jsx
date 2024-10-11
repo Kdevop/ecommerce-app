@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { userAuthDone } from '../../reduxStore/authSlice';
 import { cartData, cartReturned, cartError, cartUpdate, getCart, resetUpdateCart } from '../../reduxStore/cartSlice';
 import { Button, CircularProgress } from '@mui/material';
@@ -9,7 +9,10 @@ import { productById } from '../../apis/apiRequest';
 
 function Cart() {
     const [hasProd, setHasProd] = useState(false);
+    const [checkingout, setCheckingout] = useState(true);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
     const loggedIn = useSelector(userAuthDone);
     const haveCart = useSelector(cartReturned);
     const update = useSelector(cartUpdate)
@@ -22,7 +25,7 @@ function Cart() {
     useEffect(() => {
         if (haveCart) {
 
-            if (!cart.hasProd) { 
+            if (!cart.hasProd) {
                 setHasProd(false);
             }
 
@@ -51,7 +54,18 @@ function Cart() {
         return totalPrice.toFixed(2);
     }
 
-    
+    const checkout = () => {
+        navigate('/checkout')
+    };
+
+    useEffect(() => {
+        if (location.pathname === '/checkout') {
+            setCheckingout(true)
+        } else {
+            setCheckingout(false)
+        }
+    }, [location.pathname, setCheckingout]);
+
     if (!loggedIn) {
         return (
             <div>
@@ -60,11 +74,20 @@ function Cart() {
                 <p>Click here to <NavLink to='/login'>Sign In!</NavLink></p>
             </div>
         )
-    } 
+    }
+
+    if (!hasProd) {
+        return (
+            <div>
+                <p>You have yet to select some products.</p>
+            </div>
+        )
+    }
+
 
     return (
         <div>
-            {hasProd ? (
+            
                 <div>
                     {cart.data.map((cartItem) => (
                         <CartCard
@@ -74,21 +97,20 @@ function Cart() {
                             price={cartItem.product_price}
                             name={cartItem.product_name}
                             url={cartItem.product_url}
-
                         />
                     ))}
 
                     <p>Current total: ${runningTotal()}</p>
 
-                    <Button fullWidth type='submit' variant='contained' color='primary'>Checkout</Button>
+                    {!checkingout ? (
+                        <Button fullWidth type='submit' variant='contained' onClick={checkout} color='primary'>Checkout</Button>
+
+                    ) : (
+                        null
+                    )}
 
                 </div>
-            ) : (
-                <div>
-                    <p>You are logged in but have no products.</p>
-
-                </div>
-            )}
+ 
         </div>
 
 

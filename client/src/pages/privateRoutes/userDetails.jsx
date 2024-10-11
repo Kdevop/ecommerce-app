@@ -47,17 +47,19 @@ function UserDetails() {
                         <a href='/account'>Go back!<ReplyIcon /></a>
                     </div>
                     <div className={Styles.compcontainer}>
-                        <Address
-                            data={dataforAddress}
-                            dataCheck={dataCheckAddress}
-                            userError={userErrorCheck}
-                        />
+
                         <UserAccount
                             data={dataForAccount}
                             datacheck={dataCheckAccount}
                             //userCheck={userReturned}
                             userError={userErrorCheck}
                         />
+                        <Address
+                            data={dataforAddress}
+                            dataCheck={dataCheckAddress}
+                            userError={userErrorCheck}
+                        />
+
                     </div>
 
                 </Paper>

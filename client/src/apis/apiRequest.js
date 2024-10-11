@@ -271,4 +271,39 @@ export const orderById = async (id) => {
     return json;
 }
 
+export const dispatchCheckout = async (details) => {
+    const {shippingAddress, billingAddress, cartId} = details;
+
+    const response = await fetch(`${API_ROOT}/cart/checkout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            shippingAddress,
+            billingAddress,
+            cartId,
+        }),
+        credentials: 'include', 
+    })
+    const json = await response.json();
+    return json;
+}
+
+export const checkoutUpdate = async (session_id) => {
+
+    const response = await fetch(`${API_ROOT}/cart/checkout`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            stripeId: session_id,
+        }),
+        credentials: 'include',
+    })
+
+    const json = await response.json();
+    return json;
+}
 

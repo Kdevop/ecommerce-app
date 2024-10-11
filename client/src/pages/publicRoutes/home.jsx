@@ -8,7 +8,6 @@ import { useLocation } from 'react-router-dom';
 import {CircularProgress } from '@mui/material';
 
 
-
 function Home() {
     const dispatch = useDispatch();
     const location = useLocation();

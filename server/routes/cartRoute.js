@@ -1,5 +1,5 @@
 const express = require('express');
-const { openCart, getFromCart, addToCart, updateCart, deleteItem, checkout } = require('../controllers/cart');
+const { openCart, getFromCart, addToCart, updateCart, deleteItem, checkout, updateCheckout } = require('../controllers/cart');
 const { isAuth } = require('../controllers/auth');
 
 const cartRouter = express.Router();
@@ -14,7 +14,9 @@ cartRouter.put('/item/cartId', isAuth, updateCart);
 //end point for deleting from cart
 cartRouter.delete('/item/:productId', isAuth, deleteItem);
 //end point for check out
-cartRouter.post('/:cartId/checkout', checkout);
+cartRouter.post('/checkout', isAuth, checkout);
+//end point for updating checkout
+cartRouter.put('/checkout', isAuth, updateCheckout)
 
 module.exports = {
     cartRouter

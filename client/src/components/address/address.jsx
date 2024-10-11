@@ -25,8 +25,10 @@ function Address(props) {
         transform: isShowEdit ? 'translateY(0)' : 'translateY(-300%)',
         position: 'absolute',
         zIndex: isShowEdit ? 1000 : -1000,
+        marginLeft: '-42.5rem',
+        marginRight: '42.5rem',
     };
-
+ 
     const onSubmit = async (values, actions) => {
 
         const address = {

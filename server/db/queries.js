@@ -10,7 +10,7 @@ class Queries {
     async registerUser() {
         const { hashedPassword, email, first_name, last_name } = this.schema.userDetails;
 
-                // Input validation
+        // Input validation
         if (!hashedPassword || !email || !first_name || !last_name) {
             return { error: true, message: "All fields are required - failed at db.queries." };
         }
@@ -81,10 +81,10 @@ class Queries {
     async getFromSchemaByCategory(category) {
 
         const id = category.category;
-        
+
         try {
             const query = `SELECT * FROM products WHERE category_id = $1`;
-            const products = await pool.query(query, [ id ]);
+            const products = await pool.query(query, [id]);
 
             return { error: false, data: products.rows };
         } catch (error) {
@@ -110,7 +110,7 @@ class Queries {
             const result = await pool.query('SELECT * FROM orders WHERE user_id = $1', [userId]);
 
             if (result.rows.length === 0) {
-                return { error: false, hasOrders: false, data: result.rows}
+                return { error: false, hasOrders: false, data: result.rows }
             }
             return { error: false, hasOrders: true, data: result.rows };
         } catch (error) {
@@ -147,9 +147,9 @@ class Queries {
                 // query address here
                 const userAddress = await pool.query('SELECT * FROM billing_address WHERE user_id = $1', [userId]);
 
-                if(userAddress.rows.length === 0) {
+                if (userAddress.rows.length === 0) {
                     return { error: false, user: true, address: false, userData: userDetails.rows[0] };
-                } else{
+                } else {
                     return { error: false, user: true, address: true, userData: userDetails.rows[0], addressData: userAddress.rows[0] };
                 }
             }
@@ -187,7 +187,7 @@ class Queries {
         if (changes.firstName) {
             fields.push('first_name');
             values.push(firstName);
-            
+
         }
 
         if (changes.lastName) {
@@ -210,8 +210,8 @@ class Queries {
                 console.log(updates);
 
                 if (updates.rows.length === 0) {
-                    return {error: true, message: 'Error collecting changes' }
-                } 
+                    return { error: true, message: 'Error collecting changes' }
+                }
 
                 return { error: false, message: 'Details updated', data: updates.rows[0] };
             } catch (error) {
@@ -222,9 +222,9 @@ class Queries {
 
     async inputAddress(newAddress, userId) {
         const user = userId;
-        const {address_line_1, address_line_2, city, county, post_code} = newAddress;
+        const { address_line_1, address_line_2, city, county, post_code } = newAddress;
 
-        console.log( 'This is the address in queries', newAddress);
+        console.log('This is the address in queries', newAddress);
 
         if (!address_line_1 || !address_line_2 || !city || !county || !post_code) {
             return { error: true, message: "All fields are required - failed at db.queries." };
@@ -238,8 +238,8 @@ class Queries {
 
             console.log(addAddress);
 
-            if(addAddress.rows.length === 0) {
-                return {error: true, message: 'Error adding address'};
+            if (addAddress.rows.length === 0) {
+                return { error: true, message: 'Error adding address' };
             }
 
             return { error: false, message: 'Address added', data: addAddress.rows[0] };
@@ -251,7 +251,7 @@ class Queries {
 
     async amendAddress(newAddress, userId) {
         const user = userId;
-        const {address_line_1, address_line_2, city, county, post_code} = newAddress;
+        const { address_line_1, address_line_2, city, county, post_code } = newAddress;
 
         console.log('This is the address in queries: ', newAddress);
 
@@ -259,16 +259,16 @@ class Queries {
             return { error: true, message: "All fields are required - failed at db.queries." };
         }
 
-        try{
+        try {
             const editAddress = await pool.query(
-                `UPDATE billing_address SET address_line1 = $1, address_line2 = $2, city = $3, county = $4, post_code = $5 WHERE user_id = $6 RETURNING *`, 
+                `UPDATE billing_address SET address_line1 = $1, address_line2 = $2, city = $3, county = $4, post_code = $5 WHERE user_id = $6 RETURNING *`,
                 [address_line_1, address_line_2, city, county, post_code, user]
             );
 
             console.log(editAddress);
 
             if (editAddress.rows.length === 0) {
-                return {error: true, message: "Error editing address"};
+                return { error: true, message: "Error editing address" };
             }
 
             return { error: false, message: "Address amended", data: editAddress.rows[0] };
@@ -276,23 +276,23 @@ class Queries {
         } catch (error) {
             return { error: true, message: error.message };
         }
-        
+
     }
 
-    async initCart() {
+    async initCart(userId) {
 
-        const userId = this.schema.customerId;
+        //const userId = this.schema.customerId;
 
         try {
-            const cartExistQuery = `SELECT * FROM carts WHERE user_id = $1`;
-            const cartExists = await pool.query(cartExistQuery, [this.schema.customerId]);
+            const cartExistQuery = `SELECT * FROM cart WHERE user_id = $1 AND open = $2`;
+            const cartExists = await pool.query(cartExistQuery, [userId, true]);
 
             // If cart already exist, return the cart.
             if (cartExists.rows.length > 0) {
                 return this.cartDetails(userId);
             } else {
                 const newCartQuery = 'INSERT INTO cart (user_id, open) VALUES ($1, $2) RETURNING *';
-                const newCart = await pool.query(newCartQuery, [this.schema.customerId, true]);
+                const newCart = await pool.query(newCartQuery, [userId, true]);
                 return { error: false, exists: true, message: 'A cart has been opened', data: newCart.rows[0] };
             }
         } catch (error) {
@@ -302,7 +302,7 @@ class Queries {
     };
 
     async cartDetails(customerId) {
-        
+
         try {
             const cartProdQuery = `SELECT * FROM cart
                                     INNER JOIN cart_products
@@ -321,7 +321,7 @@ class Queries {
     };
 
     async addProductToCart(addProducts) {
-        const {customerId, product, quantity, price, name, url} = addProducts;
+        const { customerId, product, quantity, price, name, url } = addProducts;
 
         try {
             //get the cart for the current user
@@ -334,8 +334,8 @@ class Queries {
 
             const cartId = cartResult.rows[0].id;
 
-            const insertQuery = `INSERT INTO cart_products (cart_id, product_id, quantity, product_price, product_name, product_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`; 
-            const insertResult = await pool.query(insertQuery, [cartId, product, quantity, price, name, url ]);
+            const insertQuery = `INSERT INTO cart_products (cart_id, product_id, quantity, product_price, product_name, product_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+            const insertResult = await pool.query(insertQuery, [cartId, product, quantity, price, name, url]);
 
             return { error: false, data: insertResult.rows };
         } catch (error) {
@@ -345,7 +345,7 @@ class Queries {
     };
 
     async amendCart(amendProducts) {
-        const {customerId, products, quantity} = amendProducts;
+        const { customerId, products, quantity } = amendProducts;
         try {
             const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
             const cartResult = await pool.query(cartQuery, [customerId]);
@@ -365,10 +365,10 @@ class Queries {
 
     async removeFromCart(deleteProducts) {
 
-        const {customerId, product} = deleteProducts;
+        const { customerId, product } = deleteProducts;
 
         try {
-            const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
+            const cartQuery = `SELECT id FROM cart WHERE user_id = $1 AND OPEN = true`;
             const cartResult = await pool.query(cartQuery, [customerId]);
 
             const cartId = cartResult.rows[0].id;
@@ -377,42 +377,89 @@ class Queries {
             const deleteResult = await pool.query(deleteQuery, [cartId, product]);
 
             return { error: false, data: deleteResult.rows };
-            
+
         } catch (error) {
             console.error({ message: 'Error deleting product from cart', error });
             return { error: true, message: 'unable to delete product. Failed as query.' }
         }
     };
 
-    async checkout() {
+    async updateShipping(newAddress, userId) {
+        const user = userId;
+        const { address_line1, address_line2, city, county, post_code } = newAddress;
+
+        if (!address_line1 || !address_line2 || !city || !county || !post_code) {
+            return { error: true, message: "All fields are required - failed at db.queries." };
+        }
+
         try {
-            const cartId = this.schema.cartId;
-            const userId = this.schema.customerId;
-            const paymentMethod = this.schema.paymentMethod;
+            const addAddress = await pool.query(
+                `INSERT INTO "shipping_address" ("user_id", "address_line1", "address_line2", "city", "county", "post_code") VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+                [user, address_line1, address_line2, city, county, post_code]
+            );
 
-            const fetchCart = await this.cartDetails(userId);
+            if (addAddress.rows.length === 0) {
+                return { error: true, message: 'Error adding address' };
+            }
 
-            if (fetchCart.data.length === 0) {
+            return { error: false, message: 'Address added', data: addAddress.rows[0] };
+
+        } catch (error) {
+            return { error: true, message: error.message };
+        }
+    }
+
+    //for this function you need to get a table of products
+    //you already have the cart details, but you might want a more specific query on this, so you can hand that over.
+    async checkoutData(sendToCheckout) {
+        const { cartId, userId, shippingAddress, billingAddress } = sendToCheckout;
+        const status = 'open';
+        const paymentMethod = 'card';
+        let shippingId = null;
+
+        //if shipping address is the same as billing - enter billing address into shipping.
+        // you still need to action if they want a new address. 
+        if (!shippingAddress) {
+            try {
+                const userAddress = await pool.query('SELECT * FROM billing_address WHERE user_id = $1', [userId]);
+                const newAddress = userAddress.rows[0];
+
+                const addShipping = await this.updateShipping(newAddress, userId);
+
+                shippingId = addShipping.data.id;
+
+            } catch (error) {
+                console.log('Error from adding the shipping address: ', error);
+                return { error: true, message: error.message };
+            }
+        }
+
+        try {
+
+            const cartQuery = `SELECT product_id, quantity, product_price FROM cart_products WHERE cart_id = $1`;
+            const fetchCart = await pool.query(cartQuery, [cartId]);
+
+            if (fetchCart.rows.length === 0) {
                 console.error({ message: 'These is nothing in your cart.' });
                 return { error: true, message: 'Your cart is currently empty.' };
             } else {
                 let totalPrice = 0;
-                for (let item of fetchCart.data) {
-                    totalPrice += item.quantity * item.product_price;
+                for (let item of fetchCart.rows) {
+                    totalPrice += item.quantity * parseFloat(item.product_price.replace('$', ''));
                 }
 
-                const data = new Date();
-                const today = `${date.getFullYear()}-${data.getMonth()}-${date.getDate()}`;
+                const date = new Date();
+                const month = date.getMonth() + 1;
+                const today = `${date.getFullYear()}-${month}-${date.getDate()}`;
 
-                const checkoutQuery = `INSERT INTO checkout (payment_method, total_price, checkout_data, cart_id) VALUES ($1, $2, $3, $4) RETURNING *`;
-                const createCheckout = await pool.query(checkoutQuery, [paymentMethod, totalPrice, today, cartId]);
+                const checkoutQuery = `INSERT INTO checkout (billing_address_id, shipping_address_id, total_amount, checkout_date, checkout_status, cart_id, payment_method) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+                const createCheckout = await pool.query(checkoutQuery, [billingAddress, shippingId, totalPrice, today, status, cartId, paymentMethod]);
 
-                if (!createCheckout) {
+                if (createCheckout.rows.length === 0) {
                     console.error({ message: `Unable to create checkout` });
                     return { error: true, message: 'Unable to process checkout' };
                 } else {
-                    console.log('Return to front end to begin processing payment');
-                    return { error: false, message: 'Checkout ready to be processed.', data: createCheckout };
+                    return { error: false, message: 'Checkout ready to be processed.', data: createCheckout.rows };
                 }
             }
         } catch (error) {
@@ -422,6 +469,118 @@ class Queries {
 
         //further details on processing payment to be added once I have handled the front end. I will need to do an insert statement into orders once complete. 
     };
+
+    async dataForStripe(stripe) {
+        //in here i need to get the ID, prince and name from the products table. The price will need to be turned into pense and have the $ removed. 
+        // then need to get the product ID and the quantity from the user cart_products data. 
+
+        const { cartId, userId } = stripe;
+
+        let userProducts = [];
+        let products = [];
+
+        try {
+            const cartQuery = `SELECT product_id, quantity FROM cart_products WHERE cart_id = $1`;
+            const cart = await pool.query(cartQuery, [cartId]);
+
+            if (cart.rows.length === 0) {
+                return { error: true, message: 'There are no products in your cart', data: cart };
+            } else {
+
+                userProducts = cart.rows;
+
+                const productQuery = `SELECT p.id, name, price FROM products p
+                                        JOIN cart_products cp ON p.id = cp.product_id
+                                        WHERE cp.cart_id = (SELECT id FROM cart WHERE user_id = $1 AND open = true);`;
+                const productsData = await pool.query(productQuery, [userId]);
+
+                if (productsData.rows.length === 0) {
+                    return { error: true, message: 'Error fetching products.' };
+                } else {
+                    products = productsData.rows.map(item => {
+                        const { id, name, price } = item;
+                        const priceInCents = parseFloat(price.replace('$', '')) * 100;
+                        return [id, { priceInCents, name }];
+                    })
+                }
+
+                return { error: false, message: 'Here is the data for stripe', userProducts: userProducts, products: products };
+            }
+        } catch (error) {
+            console.log(error);
+            return { error: true, message: error.message };
+        }
+    }
+
+    async checkoutUpdates(payment_status, checkout_ref, stripe_status) {
+
+        try {
+
+            const checkoutQuery = `UPDATE checkout SET checkout_status = $1 WHERE id = $2 RETURNING *`
+            const checkoutData = await pool.query(checkoutQuery, [payment_status, checkout_ref]);
+
+            if (checkoutData.rows.length === 0) {
+                return { error: true, message: 'Error updating checkout' }
+            } else {
+                return { error: false, message: 'checkoutUpdated', data: checkoutData.rows[0] };
+            }
+
+        } catch (error) {
+            console.warn(error);
+            return { error: true, message: error.message };
+        };
+    };
+
+    async updateOrders(userId, order_date, checkout_id) {
+
+        const order_status = 'SHIPPED';
+
+        try {
+            const orderExistsQuery = `SELECT * FROM orders WHERE checkout_id = $1`;
+            const orderExists = await pool.query(orderExistsQuery, [checkout_id]);
+
+            if (orderExists.rows.length > 0) {
+                return { error: false, message: 'order already in table', data: orderExists.rows[0] };
+            }
+
+            const ordersQuery = `INSERT INTO orders (user_id, order_date, order_status, checkout_id) VALUES ($1, $2, $3, $4) RETURNING *`;
+            const insertOrders = await pool.query(ordersQuery, [userId, order_date, order_status, checkout_id]);
+
+            if (insertOrders.rows.length === 0) {
+                return { error: true, message: 'Error inserting into orders' };
+            } else {
+                return { error: false, message: 'Orders updated.', data: insertOrders.rows[0] };
+            }
+        } catch (error) {
+            console.warn(error);
+            return { error: true, message: error.message };
+        };
+    };
+
+    async closeCart(cartId, userId) {
+
+        try {
+            const updateQuery = `UPDATE cart SET open = $1 WHERE id = $2 RETURNING *`;
+            const updateResult = await pool.query(updateQuery, [false, cartId]);
+
+            if (!updateResult.error) {
+                try {
+                    const newCart = this.initCart(userId);
+
+                    if (!newCart.error) {
+                        return { error: false, cartUpdate: updateResult.rows, newCart: newCart.data };
+                    }
+
+                } catch (error) {
+                    console.error({ message: 'Error opening new cart: ', error });
+                    return { error: true, message: error.message }
+                }
+            }
+        } catch (error) {
+            console.error({ message: 'Error closing cart', error });
+            return { error: true, message: error.message };
+        }
+    }
 };
 
 module.exports = Queries;

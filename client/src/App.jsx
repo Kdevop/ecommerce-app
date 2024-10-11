@@ -11,6 +11,8 @@ import Orders from './pages/privateRoutes/orders';
 import OrderDetails from './pages/privateRoutes/orderDetails';
 import Logout from './components/logout/logout';
 import UserDetails from './pages/privateRoutes/userDetails';
+import Success from './pages/privateRoutes/success';
+import Cancel from './pages/privateRoutes/cancel';
 
 
 const appRouter=createBrowserRouter(createRoutesFromElements(
@@ -30,6 +32,8 @@ const appRouter=createBrowserRouter(createRoutesFromElements(
     <Route exact path='/checkout' element={<Checkout />} />
     <Route exact path='/orders' element={<Orders />} />
     <Route exact path='/orders/:orderId' element={<OrderDetails />} />
+    <Route exact path='/success/:session_id' element={<Success/>} />
+    <Route exact path='/cancel/:session_id' element={<Cancel />} />
   </Route>
 )) 
 
