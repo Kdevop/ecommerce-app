@@ -18,6 +18,8 @@ import SearchBar from '../search/search';
 import Cart from '../../pages/privateRoutes/cart';
 import { userAuthDone } from '../../reduxStore/authSlice';
 import { getProducts, getProductByCategory } from '../../reduxStore/productSlice';
+import Category from '../category/category';
+import AccountMenu from '../accountMenu/accountMenu';
 
 function Header() {
     const location = useLocation();
@@ -30,6 +32,7 @@ function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const menuRef = useRef(null);
     const buttonRef = useRef(null);
+    const ignoreRef = useRef(null);
     const isAuthenticated = useSelector(userAuthDone);
     
     const displayMenu = () => {
@@ -97,15 +100,15 @@ function Header() {
         }
     }, [isAuthenticated]);
 
-    const productCategory = async (category) => {
-        if (category === 0) {
-            dispatch(getProducts());
-            navigate('/');
-        } else {
-            dispatch(getProductByCategory(category));
-            navigate('/'); 
-        }
-    }
+    // const productCategory = async (category) => {
+    //     if (category === 0) {
+    //         dispatch(getProducts());
+    //         navigate('/');
+    //     } else {
+    //         dispatch(getProductByCategory(category));
+    //         navigate('/'); 
+    //     }
+    // }
 
     const homeButton = () => {
         dispatch(getProducts());
@@ -113,15 +116,25 @@ function Header() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (menuRef.current && !menuRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
-                setIsOpenCat(false);
-                setIsOpenAcc(false);
-                setIsOpenCart(false);
-            }
+            setTimeout(() => {
+                if (
+                    menuRef.current &&
+                    !menuRef.current.contains(event.target) &&
+                    !buttonRef.current.contains(event.target) &&
+                    !event.target.classList.contains(styles.menu) &&
+                    !event.target.classList.contains(styles.register) &&
+                    !event.target.classList.contains(styles.button) &&
+                    !event.target.classList.contains(styles.menu_container)
+                ) {
+                    setIsOpenCat(false);
+                    setIsOpenAcc(false);
+                    setIsOpenCart(false);
+                }
+            }, 500); 
         };
-
+    
         document.addEventListener('mousedown', handleClickOutside);
-
+    
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
@@ -141,26 +154,11 @@ function Header() {
             <div className={styles.menu_container}>
                 <Paper elevation={5} style={openCat} className={styles.menu} ref={menuRef}>
                     <h3>Categories</h3>
-                    <ul className={styles.menu}>
-                        <button onClick={() => productCategory(1)}>T-shirt</button>
-                        <button onClick={() => productCategory(2)}>Shoes</button>
-                        <button onClick={() => productCategory(3)}>Suits</button>
-                        <button onClick={() => productCategory(0)}>All Products</button>
-                    </ul>
+                    <Category className={styles.menu}/>
                 </Paper>
                 <Paper elevation={5} style={openAcc} className={styles.menu} ref={menuRef}>
                     <h3>Account</h3>
-                    {!isLoggedIn ? (
-                        <ul className={styles.register}>
-                            <li><NavLink to='/register'>Register</NavLink></li>
-                            <li><NavLink to='/login'>Login</NavLink></li>
-                        </ul>
-                    ) : (
-                        <ul className={styles.register}>
-                        <li><NavLink to='/account'>Account Details</NavLink></li>
-                        <li><NavLink to='/logout'>Logout</NavLink></li>
-                    </ul>
-                    )}
+                    <AccountMenu className={styles.menu}/>
 
                 </Paper>
                 <Paper elevation={5} style={openCart} className={styles.menu} ref={menuRef}>

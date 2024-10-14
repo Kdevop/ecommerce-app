@@ -1,17 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Styles from '../privateRoutes/orders.module.css';
 import { Paper } from '@mui/material';
-import { userAuthDone } from '../../reduxStore/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate, NavLink } from 'react-router-dom';
 import { getOrders, orderData, prevOrders } from '../../reduxStore/ordersSlice.js';
-import { authData } from '../../reduxStore/authSlice';
+import { authData, userAuthDone, userAuthLoading } from '../../reduxStore/authSlice';
 import OrderCard from '../../components/ordersCard/orderCard.jsx';
 import ReplyIcon from '@mui/icons-material/Reply';
 import Footer from '../../components/footer/footer.jsx';
+import { CircularProgress } from '@mui/material';
 
 function Orders() {
+    const [isLoading, setIsLoading] = useState(false);
+
     const isAuthenticated = useSelector(userAuthDone);
+    const loadingUser = useSelector(userAuthLoading);
     const user = useSelector(authData);
     const orders = useSelector(orderData);
     const hasOrders = useSelector(prevOrders);
@@ -35,26 +38,30 @@ function Orders() {
     // }, [dispatch, navigate, location.pathname, isAuthenticated, user, user.user, user.user.id]);
 
     useEffect(() => {
+        console.log(isAuthenticated);
 
-        if (!isAuthenticated) {
-            navigate('/login');
-        } else {
-
-            try {
-                const id = user.user.id;
-
-                dispatch(getOrders(id));
-
-            } catch (error) {
-
-                navigate('/login');
-
+        
+            if (!isAuthenticated) {
+                if (loadingUser) {
+                    setIsLoading(true);
+                }
+                //navigate('/login');
+                console.log('Why oh why', isAuthenticated);
+            } else {
+                try {
+                    const id = user.user.id;
+                    dispatch(getOrders(id));
+                } catch (error) {
+                    //navigate('/login');
+                    console.log(error);
+                }
             }
+      
 
-        }
+
     }, [dispatch, navigate, user]);
 
-    if (!hasOrders) {
+    if (!hasOrders && isAuthenticated) {
         return (
             <div className={Styles.orders}>
                 <Paper>
@@ -67,6 +74,21 @@ function Orders() {
                         </div>
                     </div>
                     <Footer />
+                </Paper>
+            </div>
+        )
+    }
+
+    if (isLoading) {
+        return (
+            <div>
+                <Paper>
+                    <div>
+                        <h3>Fetching Data</h3>
+                    </div>
+                    <div>
+                        <CircularProgress/>
+                    </div>
                 </Paper>
             </div>
         )
@@ -117,3 +139,22 @@ function Orders() {
 };
 
 export default Orders;
+
+
+// setTimeout(() => {
+//     if (!isAuthenticated) {
+//         if (loadingUser) {
+//             setIsLoading(true);
+//         }
+//         //navigate('/login');
+//         console.log('Why oh why', isAuthenticated);
+//     } else {
+//         try {
+//             const id = user.user.id;
+//             dispatch(getOrders(id));
+//         } catch (error) {
+//             //navigate('/login');
+//             console.log(error);
+//         }
+//     }
+// }, 60000)

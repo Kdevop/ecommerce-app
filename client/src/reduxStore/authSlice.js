@@ -58,7 +58,15 @@ export const checkUser = createAsyncThunk('auth/checkUser', async (_, { rejectWi
         const response = await checkLogin();
 
         if(response.success) {
-            return response;
+
+            const user = {
+                user: {
+                    id: response.data,
+                }
+                
+            };
+
+            return user;
         } else {
             return rejectWithValue(response);
         }
@@ -136,8 +144,8 @@ const authSlice = createSlice({
             })
             .addCase(checkUser.rejected, (state, action) => {
                 state.isUserLoading = false;
-                state.errorLogin = true;
-                state.errorData = action.payload;
+                //state.errorLogin = true;
+                //state.errorData = action.payload;
             })
     }
 });

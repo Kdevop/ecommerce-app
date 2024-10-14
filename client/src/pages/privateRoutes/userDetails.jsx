@@ -23,11 +23,13 @@ function UserDetails() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/login')
-        }
-    }, [navigate, isAuthenticated]);
+    // useEffect(() => {
+    //     if (!isAuthenticated) {
+    //         //navigate('/login')
+
+
+    //     }
+    // }, [navigate, isAuthenticated]);
 
     useEffect(() => { 
         if (isAuthenticated && location.pathname === '/userdetails') {

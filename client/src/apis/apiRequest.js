@@ -36,7 +36,7 @@ export const signinUser = async (credentials) => {
 
     const json = await response.json();
     return json;
-}
+};
 
 export const logout = async () => {
     const response = await fetch(`${API_ROOT}/users/logout`, {
@@ -50,7 +50,7 @@ export const logout = async () => {
     
     const json = await response.json();
     return json;
-}
+};
 
 export const checkLogin = async () => {
    const response = await fetch(`${API_ROOT}/users/check-session`, {
@@ -68,8 +68,7 @@ export const checkLogin = async () => {
     const json = await response.json();
     return ({ success: false, data: json});
    }
-
-}
+};
 
 export const productInit = async () => {
     const response = await fetch (`${API_ROOT}/products`, {
@@ -81,7 +80,7 @@ export const productInit = async () => {
 
     const json = await response.json();
     return json;
-}
+};
 
 export const productById = async (id) => {
     
@@ -108,7 +107,7 @@ export const productByCat = async (category) => {
 
     const json = await response.json();
     return json;
-}
+};
 
 export const customerCart = async () => {
     const response = await fetch (`${API_ROOT}/cart/` , {
@@ -288,7 +287,7 @@ export const orderById = async (id) => {
 
     const json = await response.json();
     return json;
-}
+};
 
 export const dispatchCheckout = async (details) => {
     const {shippingAddress, billingAddress, cartId} = details;
@@ -307,7 +306,7 @@ export const dispatchCheckout = async (details) => {
     })
     const json = await response.json();
     return json;
-}
+};
 
 export const checkoutUpdate = async (session_id) => {
 
@@ -324,5 +323,5 @@ export const checkoutUpdate = async (session_id) => {
 
     const json = await response.json();
     return json;
-}
+};
 

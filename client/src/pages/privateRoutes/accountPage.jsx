@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Paper } from '@mui/material';
-import { authData, userAuthDone } from '../../reduxStore/authSlice';
+import { authData, userAuthDone, userAuthLoading } from '../../reduxStore/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import Styles from '../privateRoutes/accountPage.module.css';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { userData, userDetails } from '../../reduxStore/userSlice';
 import Footer from '../../components/footer/footer';
+import { CircularProgress } from '@mui/material';
 
 function Account() {
+    const [isLoading, setIsLoading] = useState(false);
+    const loadingUser = useSelector(userAuthLoading);
     const isAuthenticated = useSelector(userAuthDone);
     const navigate = useNavigate();
     const user = useSelector(userData);
@@ -15,12 +18,30 @@ function Account() {
 
     useEffect(() => {
         if (!isAuthenticated) {
-            navigate('/login')
+            //navigate('/login')
+            if(loadingUser) {
+                setIsLoading(true);
+            }
         }
 
         dispatch(userDetails());
 
     }, [navigate, isAuthenticated, dispatch]);
+
+    if (isLoading) {
+        return (
+            <div>
+                <Paper>
+                    <div>
+                        <h3>Fetching Data</h3>
+                    </div>
+                    <div>
+                        <CircularProgress/>
+                    </div>
+                </Paper>
+            </div>
+        )
+    }
 
     return (
         <div>

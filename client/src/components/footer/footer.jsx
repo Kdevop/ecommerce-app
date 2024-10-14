@@ -6,7 +6,7 @@ function Footer() {
     return (
         <Paper elevation={5}>
             <div>
-                <p>Made by Kiernan Hall / Icons from MUI / Logo from looka.com /  Checkout out my Portfolio site - lick comming soon!</p>
+                <p>Made by Kiernan Hall / Icons from MUI / Logo from looka.com /  Checkout out my Portfolio site - link comming soon!</p>
             </div>
         </Paper>
     );

@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Styles from '../privateRoutes/orderDetails.module.css';
 import Footer from '../../components/footer/footer';
 import { Paper } from '@mui/material';
 import { useParams, useLocation, NavLink, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { userAuthDone } from '../../reduxStore/authSlice';
+import { checkUser, userAuthDone, userAuthLoading } from '../../reduxStore/authSlice';
 import ReplyIcon from '@mui/icons-material/Reply';
 import { orderDetails, orderDetailsCheckout, orderDetailsProducts } from '../../reduxStore/ordersSlice';
 import ProdDetails from '../../components/orderDetailsProd/orderDetailsProd';
+import { CircularProgress } from '@mui/material';
 
 function OrderDetails() {
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const location = useLocation();
     const navigate = useNavigate();
@@ -18,12 +20,19 @@ function OrderDetails() {
     const isAuthenticated = useSelector(userAuthDone);
     const checkout = useSelector(orderDetailsCheckout);
     const products = useSelector(orderDetailsProducts);
+    const loadingUser = useSelector(userAuthLoading);
 
     useEffect(() => {
         if (!isAuthenticated) {
-            navigate('/login')
+            //navigate('/login')
+            if(loadingUser) {
+                setIsLoading(true);
+            }
         }
-    }, [navigate, isAuthenticated]);
+
+        //dispatch(userDetails());
+
+    }, [navigate, isAuthenticated, dispatch]);
 
     useEffect(() => {
         console.log('Dispatching orderDetails for id:', orderId);
@@ -41,7 +50,7 @@ function OrderDetails() {
         return `${day}/${month}/${year}`;
     }
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !isLoading) {
         return (
             <div className={Styles.orderDetails}>
                 <Paper>
@@ -55,6 +64,23 @@ function OrderDetails() {
                     </div>
                 </Paper>
             </div>
+        )
+    }
+
+    if(!isAuthenticated && isLoading) {
+        return (
+            (
+                <div>
+                    <Paper>
+                        <div>
+                            <h3>Fetching Data</h3>
+                        </div>
+                        <div>
+                            <CircularProgress/>
+                        </div>
+                    </Paper>
+                </div>
+            )
         )
     }
 

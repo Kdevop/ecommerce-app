@@ -13,9 +13,9 @@ import Logout from './components/logout/logout';
 import UserDetails from './pages/privateRoutes/userDetails';
 import Success from './pages/privateRoutes/success';
 import Cancel from './pages/privateRoutes/cancel';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
-import { checkUser } from './reduxStore/authSlice';
+import { checkUser, userAuthDone } from './reduxStore/authSlice';
 
 
 const appRouter=createBrowserRouter(createRoutesFromElements(
@@ -43,10 +43,15 @@ const appRouter=createBrowserRouter(createRoutesFromElements(
 
 function App() {
   const dispatch = useDispatch();
+  const signInComplete = useSelector(userAuthDone);
 
   useEffect(() => {
-    dispatch(checkUser());
-  }, [dispatch])
+
+    if(!signInComplete) {
+      dispatch(checkUser());
+    }
+
+  }, [dispatch, signInComplete]);
 
   return (
     <div>
