@@ -42,12 +42,12 @@ function UserDetails() {
                     <div className={Styles.topcontainer}>
                         <div>
                             <h2 className={Styles.heading}>Hi {dataForAccount.first_name} {dataForAccount.last_name},</h2>
-                            <p>These are your details.</p>
+                            <p>These are your account details.</p>
                         </div>
                         <a href='/account'>Go back!<ReplyIcon /></a>
                     </div>
                     <div className={Styles.compcontainer}>
-
+  
                         <UserAccount
                             data={dataForAccount}
                             datacheck={dataCheckAccount}
@@ -84,7 +84,3 @@ function UserDetails() {
 
 export default UserDetails;
 
-// data={userData}
-// datacheck={userDataReturned}
-// userCheck={userReturned}
-// userError={userError}

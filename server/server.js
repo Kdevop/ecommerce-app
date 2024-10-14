@@ -9,7 +9,7 @@ const session = require('express-session');
 const { DB, SS } =require('./config');
 
 //route imports
-const { registerRouter, signinRouter, logoutRouter, orderRouter, userRouter } = require('./routes/userRoute.js');
+const { registerRouter, signinRouter, logoutRouter, orderRouter, userRouter, checkRouter } = require('./routes/userRoute.js');
 const { productRouter } = require('./routes/productRoute.js');
 const { cartRouter } = require('./routes/cartRoute.js');
 
@@ -84,6 +84,7 @@ app.use('/api/users/signin', signinRouter);
 app.use('/api/users/logout', logoutRouter);
 app.use('/api/users/orders', orderRouter);
 app.use('/api/users/details', userRouter);
+app.use('/api/users/check-session', checkRouter);
 
 //route for products
 app.use('/api/products', productRouter);

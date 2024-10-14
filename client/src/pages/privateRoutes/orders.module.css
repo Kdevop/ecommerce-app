@@ -6,3 +6,10 @@
     display: flex;
     justify-content: space-between;
 } 
+
+.ordersContainer {
+    display: flex;
+    gap: 20px;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}

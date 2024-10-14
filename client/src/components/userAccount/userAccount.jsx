@@ -1,40 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import Styles from './userAccount.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import EditDetails from "../editPersonalDetails/editDetails";
 
 function UserAccount(props) {
-    const [showEdit, setShowEdit] = useState(false);
+    const [isShowEdit, setIsShowEdit] = useState(false);
+    const editRef = useRef(null);
+    const buttonRef = useRef(null);
 
     const user = props.data;
 
     const onSubmit = () => {
-        setShowEdit(!showEdit);
+        setIsShowEdit(!isShowEdit);
     }
+
+    const showEdit = {
+        transition: 'all 0.6s ease-in-out',
+        transform: isShowEdit ? 'translateY(0)' : 'translateY(-300%)',
+        position: 'absolute',
+        zIndex: isShowEdit ? 1000 : -1000,
+        marginLeft: '25rem',
+        // marginRight: '42.5rem',
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if(editRef.current && !editRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
+                setIsShowEdit(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     return (
         <Paper>
+            <div style={showEdit} ref={editRef}>
+                <EditDetails />
+            </div>
             {user && (
                 <div>
-                    <p>This is the email: {user.email}</p>
-                    <p>This is the first name: {user.first_name}</p>
-                    <p>This is the email: {user.last_name}</p>
+                    <p>Email: <span className={Styles.details}>{user.email}</span></p>
+                    <p>First Name: <span className={Styles.details}>{user.first_name}</span></p>
+                    <p>Last Name: <span className={Styles.details}>{user.last_name}</span></p>
                 </div>
             )}
 
-            <div>
+            <div ref={buttonRef}>
                 <button onClick={onSubmit} >Edit Personal Details</button>
             </div>
 
             <hr />
-
-            {showEdit ? (
-                <div>
-                    <EditDetails />
-                </div>
-            ) : (
-                null
-            )}
-
         </Paper>
     )
 }

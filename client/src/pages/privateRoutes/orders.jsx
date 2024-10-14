@@ -58,7 +58,7 @@ function Orders() {
         return (
             <div className={Styles.orders}>
                 <Paper>
-                    <div  className={Styles.container}>
+                    <div className={Styles.container}>
                         <div>
                             <p>You do not have any previous orders</p>
                         </div>
@@ -78,25 +78,25 @@ function Orders() {
                 <Paper>
                     <div className={Styles.container}>
                         <div>
-                            <p>These are your orders</p>
+                            <h3>These are your orders</h3>
                         </div>
                         <div>
                             <a href='/account'>Go back!<ReplyIcon /></a>
                         </div>
                     </div>
-
-                    {orders.map((order) => {
-                        return (
-                            <OrderCard
-                                key={order.id}
-                                userId={order.user_id}
-                                order={order.id}
-                                order_date={order.order_date}
-                                status={order.order_status}
-                            />
-                        )
-                    })}
-
+                    <div className={Styles.ordersContainer}>
+                        {orders.map((order) => {
+                            return (
+                                <OrderCard
+                                    key={order.id}
+                                    userId={order.user_id}
+                                    order={order.id}
+                                    order_date={order.order_date}
+                                    status={order.order_status}
+                                />
+                            )
+                        })}
+                    </div>
                 </Paper>
             ) : (
                 <Paper>

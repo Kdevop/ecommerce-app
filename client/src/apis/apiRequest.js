@@ -52,6 +52,25 @@ export const logout = async () => {
     return json;
 }
 
+export const checkLogin = async () => {
+   const response = await fetch(`${API_ROOT}/users/check-session`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+   });
+   
+   if(response.status === 200) {
+    const json = await response.json();
+    return ({ success: true, data: json});
+   } else {
+    const json = await response.json();
+    return ({ success: false, data: json});
+   }
+
+}
+
 export const productInit = async () => {
     const response = await fetch (`${API_ROOT}/products`, {
         method: 'GET',

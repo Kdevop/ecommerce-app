@@ -32,6 +32,15 @@ function OrderDetails() {
         }
     }, [dispatch, location.pathname, orderId]);
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.getMonth();
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
+    }
+
     if (!isAuthenticated) {
         return (
             <div className={Styles.orderDetails}>
@@ -54,7 +63,7 @@ function OrderDetails() {
             <Paper>
                 <div className={Styles.headingContainer}>
                     <div >
-                        <p>This is the order details page</p>
+                        <h3>These are your order details.</h3>
                     </div>
                     <div>
                         <a href='/orders'>Go back!<ReplyIcon /></a>
@@ -62,7 +71,8 @@ function OrderDetails() {
                 </div>
                 <div className={Styles.container}>
                     <div>
-                        <p>This is the product side</p>
+                        <h4>Products Ordered</h4>
+                        <hr/>
                         {products.map((product) => {
                             return (
                                 <ProdDetails
@@ -77,12 +87,13 @@ function OrderDetails() {
                         })}
                     </div>
                     <div>
-                        <p>This is the checkout side</p>
-                        <p>This is the order ID: {checkout.id}</p>
-                        <p>This is the order date: {checkout.order_date}</p>
-                        <p>This is the order status: {checkout.order_status}</p>
-                        <p>This is the payment method: {checkout.payment_method}</p>
-                        <p>This is the total cost: {checkout.total_amount}</p>
+                        <h4>Checkout Details</h4>
+                        <hr/>
+                        <p>Order ID: {checkout.id}</p>
+                        <p>Order date: {formatDate(checkout.order_date)}</p>
+                        <p>Order status: {checkout.order_status}</p>
+                        <p>Payment method: {checkout.payment_method}</p>
+                        <p>Total cost: {checkout.total_amount}</p>
                         <hr />
                         <p>This is the shipping address!</p>
                         <p>{checkout.address_line1}</p>

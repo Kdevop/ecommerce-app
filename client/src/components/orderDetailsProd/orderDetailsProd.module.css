@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+
+}
+
+.title {
+    font-size: 20px;
+}
+
+.prodDetails {
+    padding-left: 5px;
+}

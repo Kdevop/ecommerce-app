@@ -11,6 +11,7 @@ import { cartData } from '../../reduxStore/cartSlice';
 import Address from '../../components/address/address';
 import { Button } from '@mui/material';
 import { dispatchCheckout } from '../../apis/apiRequest';
+import Footer from '../../components/footer/footer';
 
 function Checkout() {
     const [open, setOpen] = useState(false)
@@ -73,14 +74,7 @@ function Checkout() {
     return (
         <div className={Styles.checkout}>
             <Paper>
-                <div className={Styles.headerContainer}>
-                    <div>
-                        <p>This is the checkout page</p>
-                    </div>
-                    <div>
-                        <a href='/'>Go back!<ReplyIcon /></a>
-                    </div>
-                </div>
+
                 <div className={Styles.contentContainer}>
                     <div>
                         <h3>These are your products</h3>
@@ -102,6 +96,8 @@ function Checkout() {
                     <Button fullWidth type='submit' variant='contained' onClick={onSubmit} color='primary'>Proceed to Payment</Button>
                 </div>
             </Paper>
+
+            <Footer />
         </div>
     );
 };

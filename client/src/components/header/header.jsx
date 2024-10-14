@@ -1,5 +1,5 @@
 // dependency imports
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import { Paper } from '@mui/material';
@@ -28,6 +28,8 @@ function Header() {
     const [isOpenAcc, setIsOpenAcc] = useState(false);
     const [isOpenCart, setIsOpenCart] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const menuRef = useRef(null);
+    const buttonRef = useRef(null);
     const isAuthenticated = useSelector(userAuthDone);
     
     const displayMenu = () => {
@@ -109,19 +111,35 @@ function Header() {
         dispatch(getProducts());
     }
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
+                setIsOpenCat(false);
+                setIsOpenAcc(false);
+                setIsOpenCart(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <div>
             <div className={styles.navbar}>
                 <NavLink to='/' onClick={homeButton}><img src={logo_name} alt='E-Commerce Quick logo' /></NavLink>
                 <SearchBar className={styles.search} />
-                <div className={styles.btncontainer}>
+                <div className={styles.btncontainer} ref={buttonRef}>
                     <button onClick={displayCart} className={styles.button}><ShoppingCartOutlinedIcon /></button>
                     <button onClick={displayMenu} className={styles.button}><MenuOutlinedIcon /></button>
                     <button onClick={displayAccount} className={styles.button}><PersonOutlineOutlinedIcon /></button>
                 </div>
             </div>
             <div className={styles.menu_container}>
-                <Paper elevation={5} style={openCat} className={styles.menu}>
+                <Paper elevation={5} style={openCat} className={styles.menu} ref={menuRef}>
                     <h3>Categories</h3>
                     <ul className={styles.menu}>
                         <button onClick={() => productCategory(1)}>T-shirt</button>
@@ -130,7 +148,7 @@ function Header() {
                         <button onClick={() => productCategory(0)}>All Products</button>
                     </ul>
                 </Paper>
-                <Paper elevation={5} style={openAcc} className={styles.menu}>
+                <Paper elevation={5} style={openAcc} className={styles.menu} ref={menuRef}>
                     <h3>Account</h3>
                     {!isLoggedIn ? (
                         <ul className={styles.register}>
@@ -145,7 +163,7 @@ function Header() {
                     )}
 
                 </Paper>
-                <Paper elevation={5} style={openCart} className={styles.menu}>
+                <Paper elevation={5} style={openCart} className={styles.menu} ref={menuRef}>
                     <h3>Cart</h3>
                     <Cart className={styles.menu} />
                 </Paper>

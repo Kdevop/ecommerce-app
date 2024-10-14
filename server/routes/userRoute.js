@@ -52,6 +52,11 @@ logoutRouter.post('/', (req, res, next) => {
     });
 });
 
+const checkRouter = express.Router();
+checkRouter.get('/', isAuth, (req, res) => {
+    res.status(200).json(req.session.passport.user);
+});
+
 //end point for user orders
 const orderRouter = express.Router();
 //end point for user purchase history
@@ -74,6 +79,7 @@ module.exports = {
     signinRouter,
     logoutRouter,
     orderRouter,
-    userRouter
+    userRouter,
+    checkRouter,
 };
 

@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation, NavLink } from 'react-router-dom';
+import Styles from './cancel.module.css';
+import { useParams, useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { checkoutUpdate } from '../../apis/apiRequest';
+import { Paper } from '@mui/material';
+import Footer from '../../components/footer/footer';
 
 function Cancel() {
     const location = useLocation();
+    const navigate = useNavigate();
+
     const [update, setUpdate] = useState(false);
+    const [countdown, setCountdown] = useState(5);
 
     const { session_id } = useParams();
 
@@ -25,16 +31,46 @@ function Cancel() {
         };
     }, [location.pathname, session_id]);
 
+    useEffect(() => {
+        if (update) {
+            const countdownTimer = setInterval(() => {
+                setCountdown(prevCountdown => prevCountdown - 1);
+                if (countdown === 0) {
+                    clearInterval(countdownTimer);
+                }
+            }, 1000);
+
+            const redirectTimer = setTimeout(() => {
+                navigate('/');
+            }, 5000);
+
+            return () => {
+                clearTimeout(countdownTimer);
+                clearTimeout(redirectTimer);
+            };
+        }
+    }, [update, navigate]);
+
     return (
         <div>
-            <div>
-                <h3>You Canceled your payment.</h3>
-            </div>
-            {update ? (
-                <p>The checkout was updated... a new checkout will need to be created.</p>
-            ) : (
-                null
-            )}
+            <Paper elevation={5} className={Styles.container}>
+                <div className={Styles.contentContainer}>
+                    <div>
+                        <h3>Payment Cancelled</h3>
+                    </div>
+                    {update ? (
+                        <div>
+                            <p>Should you still wish to buy these products, you will need to go to checkout again.</p>
+                            <p>You will be redircted to the home page in {countdown}</p>
+                        </div>
+                    ) : (
+                        null
+                    )}
+                </div>
+            </Paper>
+
+            <Footer />
+
         </div>
     )
 }

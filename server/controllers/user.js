@@ -58,7 +58,7 @@ const registerUser = async (req, res) => {
 };
 
 const userOrders = async (req, res) => {
-    const { userId } = req.params;
+    const { userId } = req.params; 
 
     const Id = req.session.passport.user
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Styles from '../address/address.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import * as Yup from 'yup';
@@ -16,19 +16,21 @@ const validationSchema = Yup.object().shape({
     post_code: Yup.string().required('This feild is required.'),
 });
 
-function Address(props) { 
+function Address(props) {
     const dispatch = useDispatch();
     const [isShowEdit, setIsShowEdit] = useState(false);
+    const editRef = useRef(false);
+    const buttonRef = useRef(false);
 
     const showEdit = {
         transition: 'all 0.6s ease-in-out',
         transform: isShowEdit ? 'translateY(0)' : 'translateY(-300%)',
         position: 'absolute',
         zIndex: isShowEdit ? 1000 : -1000,
-        marginLeft: '-42.5rem',
-        marginRight: '42.5rem',
+        marginLeft: '-25rem',
+        //marginRight: '42.5rem',
     };
- 
+
     const onSubmit = async (values, actions) => {
 
         const address = {
@@ -61,23 +63,38 @@ function Address(props) {
         setIsShowEdit(!isShowEdit);
     }
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if(editRef.current && !editRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
+                setIsShowEdit(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     if (props.dataCheck) {
 
         return (
             <Paper>
                 <div>
-                    <div style={showEdit}>
+                    <div style={showEdit} ref={editRef}>
                         <EditAddress />
                     </div>
-                    <div>Address will go here</div>
-                    <p>This is the first line of the address: {props.data.address_line1}</p>
-                    <p>This is the second line of the address: {props.data.address_line2}</p>
-                    <p>This is the city: {props.data.city}</p>
-                    <p>This is the county: {props.data.county}</p>
-                    <p>This is the Post Code: {props.data.post_code}</p>
+                    <div>
+                        <p>{props.data.address_line1}</p>
+                        <p>{props.data.address_line2}</p>
+                        <p>{props.data.city}</p>
+                        <p>{props.data.county}</p>
+                        <p>{props.data.post_code}</p>
+                    </div>
                 </div>
 
-                <div>
+                <div ref={buttonRef}>
                     <button onClick={editAddress}>Edit Your Address</button>
                 </div>
 

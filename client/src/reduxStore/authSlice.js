@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { register, signinUser, logout } from '../apis/apiRequest';
+import { register, signinUser, logout, checkLogin } from '../apis/apiRequest';
 
 export const registerUser = createAsyncThunk('auth/registerUser', async (credentials, { rejectWithValue }) => {
     try {
@@ -51,7 +51,22 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async (credentials
         console.error('Error loging out: ' , error);
         return rejectWithValue(error.message);
     }
-})
+});
+
+export const checkUser = createAsyncThunk('auth/checkUser', async (_, { rejectWithValue }) => {
+    try {
+        const response = await checkLogin();
+
+        if(response.success) {
+            return response;
+        } else {
+            return rejectWithValue(response);
+        }
+    } catch (error) {
+        console.error('Error checking login: ', error);
+        return rejectWithValue(error.message);
+    }
+});
 
 const initialState = {
     isUserLoading: false,
@@ -109,6 +124,20 @@ const authSlice = createSlice({
             .addCase(logoutUser.rejected, (state, action) => {
                 state.isUserLoading = false;
                 state.error = action.payload.message;
+            })
+            .addCase(checkUser.pending, (state) => {
+                state.isUserLoading = true;
+                state.error = false;
+            })
+            .addCase(checkUser.fulfilled, (state, action) => {
+                state.isUserLoading = false;
+                state.isAuthenticated = true;  
+                state.data = action.payload;
+            })
+            .addCase(checkUser.rejected, (state, action) => {
+                state.isUserLoading = false;
+                state.errorLogin = true;
+                state.errorData = action.payload;
             })
     }
 });

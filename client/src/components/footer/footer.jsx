@@ -1,11 +1,14 @@
 import React from 'react';
 import Styles from '../footer/footer.module.css';
+import { Paper } from '@mui/material';
 
 function Footer() {
     return (
-        <div>
-            <p>This is the footer</p>
-        </div>
+        <Paper elevation={5}>
+            <div>
+                <p>Made by Kiernan Hall / Icons from MUI / Logo from looka.com /  Checkout out my Portfolio site - lick comming soon!</p>
+            </div>
+        </Paper>
     );
 };
 

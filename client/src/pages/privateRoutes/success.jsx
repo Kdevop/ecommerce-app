@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import Styles from './success.module.css';
 import { useParams, useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { checkoutUpdate } from '../../apis/apiRequest';
 import { useDispatch } from 'react-redux';
 import { getCart } from '../../reduxStore/cartSlice';
+import { Paper } from '@mui/material';
+import Footer from '../../components/footer/footer';
 
 
 function Success() {
@@ -34,10 +37,10 @@ function Success() {
     }, [location.pathname, session_id, dispatch, getCart, setCountdown]);
 
     useEffect(() => {
-        if(update) {
+        if (update) {
             dispatch(getCart());
             const countdownTimer = setInterval(() => {
-                setCountdown(prevCountdown => prevCountdown - 1 );
+                setCountdown(prevCountdown => prevCountdown - 1);
                 if (countdown === 0) {
                     clearInterval(countdownTimer);
                 }
@@ -56,14 +59,19 @@ function Success() {
 
     return (
         <div>
-            <div>
-                <h3>You have paid!</h3>
-            </div>
-            {update ? (
-                <p>The you will be re-directed to your orders in {countdown}</p>
-            ) : (
-                null
-            )}
+            <Paper elevation={5} className={Styles.container}>
+                <div className={Styles.contentContainer}>
+                    <div>
+                        <h3>You have paid!</h3>
+                    </div>
+                    {update ? (
+                        <p>The you will be re-directed to your orders in {countdown}</p>
+                    ) : (
+                        null
+                    )}
+                </div>
+            </Paper>
+            <Footer />
         </div>
     )
 }

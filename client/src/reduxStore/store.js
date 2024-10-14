@@ -15,13 +15,9 @@ import userSlice from './userSlice';
 import ordersSlice from './ordersSlice';
 import { thunk as thunkMiddleWare } from 'redux-thunk';
 
- const authPersistConfig = {
-     key: 'auth',
-     storage,
- };
- 
+
  const rootReducers = combineReducers({
-    auth: persistReducer(authPersistConfig, authSlice),
+    auth: authSlice,
     products: productSlice,
     cart: cartSlice,
     user: userSlice,
@@ -41,5 +37,17 @@ export const store = configureStore({
 
 export const persistor = persistStore(store);
 
+// const authPersistConfig = {
+//     key: 'auth',
+//     storage,
+// };
+
+// const rootReducers = combineReducers({
+//    auth: persistReducer(authPersistConfig, authSlice),
+//    products: productSlice,
+//    cart: cartSlice,
+//    user: userSlice,
+//    orders: ordersSlice,
+// })
 
 

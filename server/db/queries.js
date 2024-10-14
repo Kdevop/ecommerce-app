@@ -325,8 +325,8 @@ class Queries {
 
         try {
             //get the cart for the current user
-            const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
-            const cartResult = await pool.query(cartQuery, [customerId]);
+            const cartQuery = `SELECT id FROM cart WHERE user_id = $1 AND open = $2`;
+            const cartResult = await pool.query(cartQuery, [customerId, true]);
 
             if (cartResult.rows.length === 0) {
                 return { error: true, message: 'User does not have a cart' };
@@ -347,8 +347,8 @@ class Queries {
     async amendCart(amendProducts) {
         const { customerId, products, quantity } = amendProducts;
         try {
-            const cartQuery = `SELECT id FROM cart WHERE user_id = $1`;
-            const cartResult = await pool.query(cartQuery, [customerId]);
+            const cartQuery = `SELECT id FROM cart WHERE user_id = $1 AND open = $2`;
+            const cartResult = await pool.query(cartQuery, [customerId, true]);
 
             const cartId = cartResult.rows[0].id;
 
@@ -368,8 +368,8 @@ class Queries {
         const { customerId, product } = deleteProducts;
 
         try {
-            const cartQuery = `SELECT id FROM cart WHERE user_id = $1 AND OPEN = true`;
-            const cartResult = await pool.query(cartQuery, [customerId]);
+            const cartQuery = `SELECT id FROM cart WHERE user_id = $1 AND OPEN = $2`;
+            const cartResult = await pool.query(cartQuery, [customerId, true]);
 
             const cartId = cartResult.rows[0].id;
 
