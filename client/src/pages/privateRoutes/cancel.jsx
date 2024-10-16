@@ -3,7 +3,6 @@ import Styles from './cancel.module.css';
 import { useParams, useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { checkoutUpdate } from '../../apis/apiRequest';
 import { Paper } from '@mui/material';
-import Footer from '../../components/footer/footer';
 
 function Cancel() {
     const location = useLocation();
@@ -58,6 +57,9 @@ function Cancel() {
                     <div>
                         <h3>Payment Cancelled</h3>
                     </div>
+                    <div>
+                        <img src='/photos/logo2.jpg' alt='Image of Logo' />
+                    </div>
                     {update ? (
                         <div>
                             <p>Should you still wish to buy these products, you will need to go to checkout again.</p>
@@ -68,9 +70,6 @@ function Cancel() {
                     )}
                 </div>
             </Paper>
-
-            <Footer />
-
         </div>
     )
 }

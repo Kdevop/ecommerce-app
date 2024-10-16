@@ -90,5 +90,6 @@ export const orderData = state => state.orders.data.allOrders;
 export const prevOrders = state => state.orders.hasOrders;
 export const orderDetailsCheckout = state => state.orders.data.singleOrder.checkout;
 export const orderDetailsProducts = state => state.orders.data.singleOrder.products;
+export const loadingOrders = state => state.orders.initGetOrders;
 
 

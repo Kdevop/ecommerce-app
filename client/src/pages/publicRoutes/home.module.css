@@ -1,4 +1,17 @@
 /* grid details to go here */
+.img_container {
+    width: 100%;
+    height: auto;
+}
+
+.img_container img {
+    width: 100%;
+    height: auto;
+    margin: auto;
+    display: block;
+    padding-top: 17.5px;
+}
+
 .home {
     width: 100%;
     display: grid;
@@ -8,7 +21,9 @@
 
 .productcontainer {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three columns with equal width */
-    grid-gap: 20px; /* Spacing between grid items */
+    grid-template-columns: repeat(3, 1fr);
+    /* Three columns with equal width */
+    grid-gap: 20px;
+    /* Spacing between grid items */
     grid-column: 2 / span 10;
 }

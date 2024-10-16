@@ -5,7 +5,7 @@ import { checkoutUpdate } from '../../apis/apiRequest';
 import { useDispatch } from 'react-redux';
 import { getCart } from '../../reduxStore/cartSlice';
 import { Paper } from '@mui/material';
-import Footer from '../../components/footer/footer';
+
 
 
 function Success() {
@@ -14,9 +14,7 @@ function Success() {
     const navigate = useNavigate();
     const [update, setUpdate] = useState(false);
     const [countdown, setCountdown] = useState(5);
-
     const { session_id } = useParams();
-
 
     useEffect(() => {
         if (location.pathname === `/success/${session_id}`) {
@@ -64,6 +62,9 @@ function Success() {
                     <div>
                         <h3>You have paid!</h3>
                     </div>
+                    <div>
+                        <img src='/photos/logo2.jpg' alt='Image of Logo' />
+                    </div>
                     {update ? (
                         <p>The you will be re-directed to your orders in {countdown}</p>
                     ) : (
@@ -71,7 +72,6 @@ function Success() {
                     )}
                 </div>
             </Paper>
-            <Footer />
         </div>
     )
 }

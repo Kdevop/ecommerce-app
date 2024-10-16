@@ -17,11 +17,18 @@
 }
 
 .button {
-    gap: 3px;
+    margin: 3px;
     width: 60px;
     background-color: #1BBD7E;
-    border-radius: 10px;
-    
+    border-radius: 5px;
+    border: none;
+}
+
+.button:hover {
+    transition: 0.5s;
+    background-color: #04AA6D;
+    color: white;
+    cursor: pointer;
 }
 
 .menu_container {

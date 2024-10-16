@@ -157,4 +157,5 @@ export const userReturned = state => state.user.userReturned;
 export const userDataReturned = state => state.user.userData;
 export const addressReturned = state => state.user.userAddress;
 export const userError = state => state.user.userError;
-export const updatedUser = state => state.userUpdated;
+export const updatedUser = state => state.user.userUpdated;
+export const fetchingUser = state => state.user.fetchingUser;

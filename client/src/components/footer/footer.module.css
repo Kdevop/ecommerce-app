@@ -1,0 +1,51 @@
+.container {
+    background-color: #FFFFFF;
+    margin-top: 17.5px;
+    /* margin-top: 100vh; */
+}
+
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* gap: 1rem; */
+    justify-content: space-between;
+    padding-left: 5rem;
+    padding-right: 5rem;
+}
+
+.detailscontainer {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.listcontainer {
+    text-align: center;
+
+}
+
+.title {
+    font-weight: 500;
+    margin: 0;
+}
+
+li:hover {
+    cursor: pointer;
+    color: grey;
+    transition: 0.7s;
+}
+
+.emailcontainer {
+    display: inline-block;
+}
+
+.emailcontainer button {
+    width: 100%;
+    border: none;
+    background-color: #1BBD7E;
+    margin-top: 1rem;
+}
+
+
+

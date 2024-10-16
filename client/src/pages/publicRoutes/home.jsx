@@ -29,6 +29,9 @@ function Home() {
 
     return (
         <div>
+            <div className={Styles.img_container}>
+                <img src={`/photos/sale_image2.jpg`} className={Styles.img}/>
+            </div>
             <div className={Styles.home}>
                 <div className={Styles.productcontainer}>
                     {products.map((product) => {
@@ -47,9 +50,6 @@ function Home() {
                     }
                 </div>
 
-            </div>
-            <div>
-                <Footer />
             </div>
         </div>
     );

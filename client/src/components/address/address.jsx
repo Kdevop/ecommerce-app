@@ -17,6 +17,8 @@ const validationSchema = Yup.object().shape({
 });
 
 function Address(props) {
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const dispatch = useDispatch();
     const [isShowEdit, setIsShowEdit] = useState(false);
     const editRef = useRef(false);
@@ -65,7 +67,7 @@ function Address(props) {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if(editRef.current && !editRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
+            if (editRef.current && !editRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
                 setIsShowEdit(false);
             }
         };
@@ -77,84 +79,85 @@ function Address(props) {
         };
     }, []);
 
+    if (isLoading) {
+        
+    }
+    
     if (props.dataCheck) {
 
         return (
-            <Paper>
+            <div>
                 <div>
                     <div style={showEdit} ref={editRef}>
                         <EditAddress />
                     </div>
                     <div>
-                        <p>{props.data.address_line1}</p>
-                        <p>{props.data.address_line2}</p>
-                        <p>{props.data.city}</p>
-                        <p>{props.data.county}</p>
-                        <p>{props.data.post_code}</p>
+                        <p>YOUR ADDRESS:</p>
+                        <p className={Styles.words}>{props.data.address_line1}</p>
+                        <p className={Styles.words}>{props.data.address_line2}</p>
+                        <p className={Styles.words}>{props.data.city}</p>
+                        <p className={Styles.words}>{props.data.county}</p>
+                        <p className={Styles.words}>{props.data.post_code}</p>
                     </div>
                 </div>
 
                 <div ref={buttonRef}>
                     <button onClick={editAddress}>Edit Your Address</button>
                 </div>
-
-                <hr />
-
-
-            </Paper>
-        )
-    }
-    else {
-        return (
-            <div>
-                <div>You need to add an address!</div>
-                <Grid className={Styles.registration}>
-                    <Paper elevation={5} className={Styles.paper}>
-                        <Grid align='center'>
-                            <Avatar className={Styles.avatar}>
-                                <AddCircleOutlineOutlinedIcon />
-                            </Avatar>
-                            <Typography varient='caption'>To update your details, make any changes below.</Typography>
-                        </Grid>
-                        <Formik
-                            initialValues={{
-                                address_line_1: '',
-                                address_line_2: '',
-                                city: '',
-                                county: '',
-                                post_code: '',
-                            }}
-                            validationSchema={validationSchema}
-                            onSubmit={onSubmit}
-                        >
-                            {({ values, handleBlur, isSubmitting, handleChange, handleSubmit }) => (
-                                <Form onSubmit={handleSubmit} autoComplete='off'>
-                                    <TextField fullWidth label='Number and Street Name' name='address_line_1' id='address_line_1' placeholder='Number and Street Name' className={Styles.input} value={values.firstName} onChange={handleChange} onBlur={handleBlur} />
-                                    <ErrorMessage name='address_line_1' component='div' className={Styles.error} />
-                                    <TextField fullWidth label='Town or Village' name='address_line_2' id='address_line_2' placeholder='Town or Village' className={Styles.input} value={values.lastName} onChange={handleChange} onBlur={handleBlur} />
-                                    <ErrorMessage name='address_line_2' component='div' className={Styles.error} />
-                                    <TextField fullWidth label='City' name='city' id='city' placeholder='City' className={Styles.input} value={values.email} onChange={handleChange} onBlur={handleBlur} />
-                                    <ErrorMessage name='city' component='div' className={Styles.error} />
-                                    <TextField fullWidth label='County' name='county' id='county' placeholder='County' className={Styles.input} value={values.email} onChange={handleChange} onBlur={handleBlur} />
-                                    <ErrorMessage name='county' component='div' className={Styles.error} />
-                                    <TextField fullWidth label='Post Code' name='post_code' id='post_code' placeholder='Post Code' className={Styles.input} value={values.email} onChange={handleChange} onBlur={handleBlur} />
-                                    <ErrorMessage name='post_code' component='div' className={Styles.error} />
-                                    {!isSubmitting ? (
-                                        <Button fullWidth type='submit' variant='contained' color='primary' className={Styles.button} >Submit Changes</Button>
-                                    ) : (
-                                        <div className={Styles.loadingIcon}>
-                                            <CircularProgress />
-                                        </div>
-                                    )}
-
-                                </Form>
-                            )}
-                        </Formik>
-                    </Paper>
-                </Grid>
             </div>
         )
     }
+    // else {
+    //     return (
+    //         <div>
+    //             <div>You need to add an address!</div>
+    //             <Grid className={Styles.registration}>
+    //                 <Paper elevation={5} className={Styles.paper}>
+    //                     <Grid align='center'>
+    //                         <Avatar className={Styles.avatar}>
+    //                             <AddCircleOutlineOutlinedIcon />
+    //                         </Avatar>
+    //                         <Typography varient='caption'>To update your details, make any changes below.</Typography>
+    //                     </Grid>
+    //                     <Formik
+    //                         initialValues={{
+    //                             address_line_1: '',
+    //                             address_line_2: '',
+    //                             city: '',
+    //                             county: '',
+    //                             post_code: '',
+    //                         }}
+    //                         validationSchema={validationSchema}
+    //                         onSubmit={onSubmit}
+    //                     >
+    //                         {({ values, handleBlur, isSubmitting, handleChange, handleSubmit }) => (
+    //                             <Form onSubmit={handleSubmit} autoComplete='off'>
+    //                                 <TextField fullWidth label='Number and Street Name' name='address_line_1' id='address_line_1' placeholder='Number and Street Name' className={Styles.input} value={values.firstName} onChange={handleChange} onBlur={handleBlur} />
+    //                                 <ErrorMessage name='address_line_1' component='div' className={Styles.error} />
+    //                                 <TextField fullWidth label='Town or Village' name='address_line_2' id='address_line_2' placeholder='Town or Village' className={Styles.input} value={values.lastName} onChange={handleChange} onBlur={handleBlur} />
+    //                                 <ErrorMessage name='address_line_2' component='div' className={Styles.error} />
+    //                                 <TextField fullWidth label='City' name='city' id='city' placeholder='City' className={Styles.input} value={values.email} onChange={handleChange} onBlur={handleBlur} />
+    //                                 <ErrorMessage name='city' component='div' className={Styles.error} />
+    //                                 <TextField fullWidth label='County' name='county' id='county' placeholder='County' className={Styles.input} value={values.email} onChange={handleChange} onBlur={handleBlur} />
+    //                                 <ErrorMessage name='county' component='div' className={Styles.error} />
+    //                                 <TextField fullWidth label='Post Code' name='post_code' id='post_code' placeholder='Post Code' className={Styles.input} value={values.email} onChange={handleChange} onBlur={handleBlur} />
+    //                                 <ErrorMessage name='post_code' component='div' className={Styles.error} />
+    //                                 {!isSubmitting ? (
+    //                                     <Button fullWidth type='submit' variant='contained' color='primary' className={Styles.button} >Submit Changes</Button>
+    //                                 ) : (
+    //                                     <div className={Styles.loadingIcon}>
+    //                                         <CircularProgress />
+    //                                     </div>
+    //                                 )}
+
+    //                             </Form>
+    //                         )}
+    //                     </Formik>
+    //                 </Paper>
+    //             </Grid>
+    //         </div>
+    //     )
+    // }
 
 }
 

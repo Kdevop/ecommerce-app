@@ -97,7 +97,6 @@ function Checkout() {
                 </div>
             </Paper>
 
-            <Footer />
         </div>
     );
 };

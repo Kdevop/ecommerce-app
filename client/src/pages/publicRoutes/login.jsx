@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './login.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
-import { Formik, Form, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
@@ -64,7 +64,7 @@ function Login() {
                               
                 dispatch(getCart());
                 
-                await new Promise(resolve => setTimeout(resolve, 2500));
+                await new Promise(resolve => setTimeout(resolve, 1500));
                 navigate('/');
             }
     
@@ -78,6 +78,10 @@ function Login() {
     
         fetchData();
     }, [signInComplete, signInError, dispatch]);
+
+    const onFacebook = async () => {
+        console.log('You are trying to login with facebook');
+    };
 
     return (
         <Grid className={styles.registration}>
@@ -138,11 +142,12 @@ function Login() {
                                 </div>
                             )}
                             <div>
-                                <Typography>Don't have an account? Click here to <NavLink to='/register'>Sign Up!</NavLink></Typography>
+                                <Typography>Don't have an account? Click here to <NavLink to='/register'>Register</NavLink></Typography>
                             </div>
                         </Form>
                     )}
                 </Formik>
+
             </Paper>
         </Grid>
     );

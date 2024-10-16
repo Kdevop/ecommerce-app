@@ -1,0 +1,13 @@
+.topcontainer {
+    margin-top: 17.5px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    padding: 5rem;
+    text-align: center;
+}
+
+.register li {
+    text-decoration: none;
+}

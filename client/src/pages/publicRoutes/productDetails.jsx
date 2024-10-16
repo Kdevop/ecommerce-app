@@ -7,6 +7,7 @@ import { Button, CircularProgress, Paper } from '@mui/material';
 import { singleProdReturned, getProductById } from '../../reduxStore/productSlice';
 import { userAuthDone } from '../../reduxStore/authSlice';
 import { addToCart, cartUpdate, cartData } from '../../reduxStore/cartSlice';
+import Loading from '../../components/loading/loading';
 
 
 function ProductDetails() {
@@ -86,21 +87,19 @@ function ProductDetails() {
         navigate('/checkout')
     };
 
-    // if (cart.data.product_id && cart.data.product_id === product.product.id) {
-    //     setInCart(true);
-    // }
 
     if (product.length === 0) {
         return (
-            <div className={Styles.loading}>
-                <CircularProgress />
+            <div>
+                <Loading />
             </div>
         )
     };
 
     return (
-        <div>
-            <Paper elevation={5} className={Styles.productcontainer}>
+
+        <Paper elevation={5} className={Styles.productcontainer}>
+            <div className={Styles.container}>
                 <div className={Styles.imagecontainer}>
                     <img src={`/photos/${product.image_url}.jpg`} alt={`Image of ${product.name}`} width={500} height={500} />
                 </div>
@@ -134,11 +133,8 @@ function ProductDetails() {
                         null
                     )}
                 </div>
-            </Paper>
-
-            <Footer />
-        </div>
-
+            </div>
+        </Paper>
     );
 };
 

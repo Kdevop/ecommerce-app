@@ -25,7 +25,7 @@ function UserAccount(props) {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if(editRef.current && !editRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
+            if (editRef.current && !editRef.current.contains(event.target) && !buttonRef.current.contains(event.target)) {
                 setIsShowEdit(false);
             }
         };
@@ -38,24 +38,25 @@ function UserAccount(props) {
     }, []);
 
     return (
-        <Paper>
+        <div>
             <div style={showEdit} ref={editRef}>
                 <EditDetails />
             </div>
             {user && (
                 <div>
-                    <p>Email: <span className={Styles.details}>{user.email}</span></p>
-                    <p>First Name: <span className={Styles.details}>{user.first_name}</span></p>
-                    <p>Last Name: <span className={Styles.details}>{user.last_name}</span></p>
+                    <p>EMAIL:</p> 
+                    <p><span className={Styles.details}>{user.email}</span></p>
+                    <p>FIRST NAME: </p>
+                    <p><span className={Styles.details}>{user.first_name}</span></p>
+                    <p>LAST NAME: </p> 
+                    <p><span className={Styles.details}>{user.last_name}</span></p>
                 </div>
             )}
 
             <div ref={buttonRef}>
                 <button onClick={onSubmit} >Edit Personal Details</button>
             </div>
-
-            <hr />
-        </Paper>
+        </div>
     )
 }
 

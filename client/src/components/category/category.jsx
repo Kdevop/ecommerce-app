@@ -1,4 +1,5 @@
 import React from 'react';
+import Styles from './category.module.css';
 import { getProducts, getProductByCategory } from '../../reduxStore/productSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +20,7 @@ function Category() {
     }
 
     return (
-        <div>
+        <div >
             <ul>
                 <button onClick={() => productCategory(1)}>T-shirt</button>
                 <button onClick={() => productCategory(2)}>Shoes</button>

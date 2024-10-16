@@ -144,7 +144,6 @@ function Header() {
         <div>
             <div className={styles.navbar}>
                 <NavLink to='/' onClick={homeButton}><img src={logo_name} alt='E-Commerce Quick logo' /></NavLink>
-                <SearchBar className={styles.search} />
                 <div className={styles.btncontainer} ref={buttonRef}>
                     <button onClick={displayCart} className={styles.button}><ShoppingCartOutlinedIcon /></button>
                     <button onClick={displayMenu} className={styles.button}><MenuOutlinedIcon /></button>

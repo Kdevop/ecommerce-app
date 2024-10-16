@@ -2,66 +2,51 @@ import React, { useEffect, useState } from 'react';
 import Styles from '../privateRoutes/orders.module.css';
 import { Paper } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useNavigate, NavLink } from 'react-router-dom';
-import { getOrders, orderData, prevOrders } from '../../reduxStore/ordersSlice.js';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getOrders, orderData, prevOrders, loadingOrders } from '../../reduxStore/ordersSlice.js';
 import { authData, userAuthDone, userAuthLoading } from '../../reduxStore/authSlice';
 import OrderCard from '../../components/ordersCard/orderCard.jsx';
 import ReplyIcon from '@mui/icons-material/Reply';
-import Footer from '../../components/footer/footer.jsx';
-import { CircularProgress } from '@mui/material';
+import Loading from '../../components/loading/loading';
+import NotLogin from '../../components/notLogin/notLogin.jsx';
 
 function Orders() {
-    const [isLoading, setIsLoading] = useState(false);
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const isAuthenticated = useSelector(userAuthDone);
     const loadingUser = useSelector(userAuthLoading);
+    const ordersLoading = useSelector(loadingOrders)
     const user = useSelector(authData);
     const orders = useSelector(orderData);
     const hasOrders = useSelector(prevOrders);
-    const navigate = useNavigate();
-    const location = useLocation();
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     if (!isAuthenticated) {
-    //         navigate('/login')
-    //     }
-    // }, [navigate, isAuthenticated]);
-
-    // useEffect(() => {
-    //     if (isAuthenticated && location.pathname === '/orders' && user && user.user && user.user.id) {
-
-    //         const id = user.user.id;
-
-    //         dispatch(getOrders(id));
-    //     }
-    // }, [dispatch, navigate, location.pathname, isAuthenticated, user, user.user, user.user.id]);
+    useEffect(() => {
+        setTimeout(() => {
+            if (!loadingUser && !ordersLoading) {
+                setIsLoading(false);
+            }
+        }, 5000)
+    });
 
     useEffect(() => {
-        console.log(isAuthenticated);
+        if (isAuthenticated) {
+           setIsLoggedIn(true);
+           const id = user.user.id;
+           dispatch(getOrders(id));      
 
-        
-            if (!isAuthenticated) {
-                if (loadingUser) {
-                    setIsLoading(true);
-                }
-                //navigate('/login');
-                console.log('Why oh why', isAuthenticated);
-            } else {
-                try {
-                    const id = user.user.id;
-                    dispatch(getOrders(id));
-                } catch (error) {
-                    //navigate('/login');
-                    console.log(error);
-                }
-            }
-      
+        } 
+    }, [dispatch, user]);
 
+    if (isLoading) {
+        return (
+            <div>
+                <Loading />
+            </div>
+        )
+    }
 
-    }, [dispatch, navigate, user]);
-
-    if (!hasOrders && isAuthenticated) {
+    if (!hasOrders && isLoggedIn) {
         return (
             <div className={Styles.orders}>
                 <Paper>
@@ -73,22 +58,6 @@ function Orders() {
                             <a href='/account'>Go back!<ReplyIcon /></a>
                         </div>
                     </div>
-                    <Footer />
-                </Paper>
-            </div>
-        )
-    }
-
-    if (isLoading) {
-        return (
-            <div>
-                <Paper>
-                    <div>
-                        <h3>Fetching Data</h3>
-                    </div>
-                    <div>
-                        <CircularProgress/>
-                    </div>
                 </Paper>
             </div>
         )
@@ -96,7 +65,7 @@ function Orders() {
 
     return (
         <div className={Styles.orders}>
-            {isAuthenticated ? (
+            {isLoggedIn ? (
                 <Paper>
                     <div className={Styles.container}>
                         <div>
@@ -121,40 +90,13 @@ function Orders() {
                     </div>
                 </Paper>
             ) : (
-                <Paper>
-                    <div>
-                        <p>You need to be logged in to view this content.</p>
-                        <p>You should be redirected, but if not, please lick the link below:</p>
-                        <ul className={Styles.register}>
-                            <li><NavLink to='/register'>Register</NavLink></li>
-                            <li><NavLink to='/login'>Login</NavLink></li>
-                        </ul>
-                    </div>
-
-                </Paper>
+                <div>
+                    <NotLogin />
+                </div>
             )}
-            <Footer />
         </div>
     );
 };
 
 export default Orders;
 
-
-// setTimeout(() => {
-//     if (!isAuthenticated) {
-//         if (loadingUser) {
-//             setIsLoading(true);
-//         }
-//         //navigate('/login');
-//         console.log('Why oh why', isAuthenticated);
-//     } else {
-//         try {
-//             const id = user.user.id;
-//             dispatch(getOrders(id));
-//         } catch (error) {
-//             //navigate('/login');
-//             console.log(error);
-//         }
-//     }
-// }, 60000)
