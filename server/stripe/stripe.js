@@ -31,16 +31,14 @@ const dispatchToStripe = async (products, userProducts, checkout) => {
 
         return {error: false, url: session.url, sessionId: session.id}
     } catch (error) {
-        return {error: true, message: error.message};
         console.error('This is the error: ', error);
+        return {error: true, message: error.message};
     }
 };
 
 const paymentObject = async (payment_session) => {
 
     const sessionId = payment_session.stripeId;
-    
-    console.log('Here is the sessionId: ', sessionId);
 
     const object = await stripe.checkout.sessions.retrieve(sessionId)
 

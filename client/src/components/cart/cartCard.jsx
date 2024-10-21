@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Styles from '../cart/cartCard.module.css'
-import { useSelector, useDispatch } from 'react-redux';
-import { NavLink } from 'react-router-dom';
-import { Button, CircularProgress, IconButton } from '@mui/material';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { useDispatch } from 'react-redux';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { updateCart, deleteItem } from '../../reduxStore/cartSlice';
-
 
 function CartCard(props) {
     const [drpdwn, setDrpdwn] = useState(false);
@@ -26,12 +22,12 @@ function CartCard(props) {
     }
 
     const changeCart = async (quantity) => {
-        //you might want some additional stuff here to check responces etc. 
+ 
         if (quantity === 0) {
 
-            const product = props.id;
+            const id = props.id;
 
-            dispatch(deleteItem(product));
+            dispatch(deleteItem(id));
 
         } else {
 
@@ -49,7 +45,7 @@ function CartCard(props) {
     }
 
     const price = parseFloat(props.price.replace('$', ''));
-    const quantity = parseInt(props.quantity, 10); // Assuming quantity is an integer
+    const quantity = parseInt(props.quantity, 10); 
     
     const subPrice = price * quantity;
 

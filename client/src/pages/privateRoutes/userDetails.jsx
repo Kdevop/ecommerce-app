@@ -24,7 +24,6 @@ function UserDetails() {
     const loading = useSelector(fetchingUser); // from userSlice, this is confirms if we are waiting for user details.
     const loadingUser = useSelector(userAuthLoading); // from authSlice, confirms if we are waiting for userSession details.
     const dispatch = useDispatch();
-    //const location = useLocation();
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -42,11 +41,6 @@ function UserDetails() {
         }, 5000)
     }, [loadingUser, loading]);
 
-    // useEffect(() => {
-    //     if (isAuthenticated && location.pathname === '/userdetails') {
-    //         dispatch(userDetails());
-    //     }
-    // }, [dispatch, location.pathname, isAuthenticated]);
 
     if (isLoading) {
         return (
@@ -56,7 +50,7 @@ function UserDetails() {
         )
     } else {
         return (
-            <div>
+            <div> 
                 {isLoggedIn ? (
                     <Paper className={Styles.container}>
                         <div className={Styles.topcontainer}>

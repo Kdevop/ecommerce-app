@@ -19,8 +19,6 @@ function UserAccount(props) {
         transform: isShowEdit ? 'translateY(0)' : 'translateY(-300%)',
         position: 'absolute',
         zIndex: isShowEdit ? 1000 : -1000,
-        marginLeft: '25rem',
-        // marginRight: '42.5rem',
     };
 
     useEffect(() => {
@@ -40,7 +38,7 @@ function UserAccount(props) {
     return (
         <div>
             <div style={showEdit} ref={editRef}>
-                <EditDetails />
+                <EditDetails showChange={onSubmit}/>
             </div>
             {user && (
                 <div>

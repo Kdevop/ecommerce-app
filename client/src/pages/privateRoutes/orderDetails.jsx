@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Styles from '../privateRoutes/orderDetails.module.css';
-import Footer from '../../components/footer/footer';
 import { Paper } from '@mui/material';
-import { useParams, useLocation, NavLink, Navigate, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkUser, userAuthDone, userAuthLoading } from '../../reduxStore/authSlice';
+import { userAuthDone, userAuthLoading } from '../../reduxStore/authSlice';
 import ReplyIcon from '@mui/icons-material/Reply';
 import { orderDetails, orderDetailsCheckout, orderDetailsProducts } from '../../reduxStore/ordersSlice';
 import ProdDetails from '../../components/orderDetailsProd/orderDetailsProd';
@@ -24,18 +23,15 @@ function OrderDetails() {
 
     useEffect(() => {
         if (!isAuthenticated) {
-            //navigate('/login')
+
             if(loadingUser) {
                 setIsLoading(true);
             }
         }
 
-        //dispatch(userDetails());
-
     }, [navigate, isAuthenticated, dispatch]);
 
     useEffect(() => {
-        console.log('Dispatching orderDetails for id:', orderId);
         if (location.pathname === `/orders/${orderId}`) {
             dispatch(orderDetails(orderId));
         }
@@ -132,7 +128,7 @@ function OrderDetails() {
                 </div>
 
             </Paper>
-            <Footer />
+
         </div>
 
     );

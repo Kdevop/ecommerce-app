@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Styles from '../publicRoutes/productDetails.module.css';
-import Footer from '../../components/footer/footer';
-import { useParams, useLocation, NavLink, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, CircularProgress, Paper } from '@mui/material';
+import { Button, Paper } from '@mui/material';
 import { singleProdReturned, getProductById } from '../../reduxStore/productSlice';
 import { userAuthDone } from '../../reduxStore/authSlice';
-import { addToCart, cartUpdate, cartData } from '../../reduxStore/cartSlice';
+import { addToCart, cartData } from '../../reduxStore/cartSlice';
 import Loading from '../../components/loading/loading';
 
 
@@ -39,18 +38,12 @@ function ProductDetails() {
     }, [isAuthenticated, setIsLoggedIn]);
 
 
-
     useEffect(() => {
 
-        if (isLoggedIn) {
+        if (isLoggedIn && cart) {
             setInCart(false);
 
-            console.log(cart);
-
             const cartCheck = cart.data;
-
-            console.log(cartCheck);
-
 
             if (Array.isArray(cartCheck)) {
                 const isProductInCart = cartCheck.some(cart => cart.product_id === product.id);
@@ -126,8 +119,7 @@ function ProductDetails() {
                     {loginMessage ? (
                         <div>
                             <p>You need to be logged in to add to your cart.</p>
-                            <p>Click here to <NavLink to='/register'>Register!</NavLink></p>
-                            <p>Click here to <NavLink to='/login'>Sign In!</NavLink></p>
+                            <p>You can Login or Register using the account menu at the top.</p>
                         </div>
                     ) : (
                         null

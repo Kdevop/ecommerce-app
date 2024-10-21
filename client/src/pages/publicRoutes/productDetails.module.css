@@ -20,5 +20,46 @@
     width: 100%; 
 }
 
+@media only screen and (max-width: 1200px) {
+    .container {
+        margin: 0;
+        max-width: 100%;
+        gap: 0;
+    }
+    .imagecontainer {
+        max-width: 75%;
+        height: auto;
+        object-fit: contain;
+    }
+    .imagecontainer img {
+        height: auto;
+        object-fit: contain;
+    }
+}
 
+@media only screen and (max-width: 1000px) {
+    .imagecontainer img {
+        max-width: 100%;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    .container {
+        flex-direction: column;
+    }
+    .detailscontainer {
+        padding-top: 0;
+    }
+
+    .imagecontainer {
+      width: 100%;
+      max-width: 100%;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .name h3 {
+        /* margin: 0; */
+    }
+}
 

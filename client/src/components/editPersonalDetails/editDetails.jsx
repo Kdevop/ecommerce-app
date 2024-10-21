@@ -1,8 +1,8 @@
 import React, { useState, useEffect }  from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Styles from '../editPersonalDetails/editDetails.module.css'
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
-import { Formik, Form, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -18,7 +18,8 @@ const validationSchema = Yup.object().shape({
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
 
-function EditDetails() {
+function EditDetails(props) {
+    const {showChange} = props;
     const [showPassword, setShowPassword] = useState(false);
     const [formCheck, setformCheck] = useState(false);
     const [showComplete, setShowComplete] = useState(false);
@@ -53,13 +54,13 @@ function EditDetails() {
                 return acc;
             }, {});
 
-            console.log(dataToSubmit)
-
+            
             try {
 
                 const update = await dispatch(updateDetails(dataToSubmit));
-                await new Promise(resolve => setTimeout(resolve, 5000));
+                await new Promise(resolve => setTimeout(resolve, 2500));
                 console.log(update);
+                showChange();
 
             } catch (error) {
                 setShowError(true);
@@ -82,7 +83,7 @@ function EditDetails() {
         };
     
         fetchData();
-    }, []);
+    }, [navigate, userChanged]);
 
 
     return (

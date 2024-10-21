@@ -31,7 +31,7 @@ function Footer() {
                     <form>
                         <input type='text' placeholder='Enter your email here' name='email' />
                     </form>
-                </div>
+                </div> 
             </div>
             <hr />
             <div className={Styles.copyrightcontainer}>

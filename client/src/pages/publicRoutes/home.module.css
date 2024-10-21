@@ -27,3 +27,24 @@
     /* Spacing between grid items */
     grid-column: 2 / span 10;
 }
+
+@media only screen and (max-width: 1000px) {
+    .productcontainer {
+        grid-column: 1 / span 12;
+    }
+}
+
+@media only screen and (max-width: 750px){
+    .productcontainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .home {
+        margin-top: 10px;
+    }
+}
+
+@media only screen and (max-width: 350px) {
+    .productcontainer {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

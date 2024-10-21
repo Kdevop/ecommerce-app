@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import Styles from './cart.module.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { userAuthDone } from '../../reduxStore/authSlice';
-import { cartData, cartReturned, cartError, cartUpdate, getCart, resetUpdateCart } from '../../reduxStore/cartSlice';
-import { Button, CircularProgress } from '@mui/material';
+import { cartData, cartReturned, cartUpdate, getCart, resetUpdateCart } from '../../reduxStore/cartSlice';
+import { Button } from '@mui/material';
 import CartCard from '../../components/cart/cartCard';
-import { productById } from '../../apis/apiRequest';
 
-function Cart() {
+function Cart(props) {
+    const { onLogin, onReg } = props;
     const [hasProd, setHasProd] = useState(false);
     const [checkingout, setCheckingout] = useState(true);
     const dispatch = useDispatch();
@@ -20,7 +21,7 @@ function Cart() {
 
     useEffect(() => {
         dispatch(getCart());
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         if (haveCart) {
@@ -68,10 +69,9 @@ function Cart() {
 
     if (!loggedIn) {
         return (
-            <div>
-                <p>You need to be logged in to view your cart</p>
-                <p>Click here to <NavLink to='/register'>Register!</NavLink></p>
-                <p>Click here to <NavLink to='/login'>Sign In!</NavLink></p>
+            <div className={Styles.container}>
+                <button onClick={onReg}>Register</button>
+                <button onClick={onLogin}>Login</button>
             </div>
         )
     }
@@ -87,30 +87,30 @@ function Cart() {
 
     return (
         <div>
-            
-                <div>
-                    {cart.data.map((cartItem) => (
-                        <CartCard
-                            key={cartItem.product_id}
-                            id={cartItem.product_id}
-                            quantity={cartItem.quantity}
-                            price={cartItem.product_price}
-                            name={cartItem.product_name}
-                            url={cartItem.product_url}
-                        />
-                    ))}
 
-                    <p>Current total: ${runningTotal()}</p>
+            <div>
+                {cart.data.map((cartItem) => (
+                    <CartCard
+                        key={cartItem.product_id}
+                        id={cartItem.product_id}
+                        quantity={cartItem.quantity}
+                        price={cartItem.product_price}
+                        name={cartItem.product_name}
+                        url={cartItem.product_url}
+                    />
+                ))}
 
-                    {!checkingout ? (
-                        <Button fullWidth type='submit' variant='contained' onClick={checkout} color='primary'>Checkout</Button>
+                <p>Current total: ${runningTotal()}</p>
 
-                    ) : (
-                        null
-                    )}
+                {!checkingout ? (
+                    <Button fullWidth type='submit' variant='contained' onClick={checkout} color='primary'>Checkout</Button>
 
-                </div>
- 
+                ) : (
+                    null
+                )}
+
+            </div>
+
         </div>
 
 

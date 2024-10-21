@@ -38,7 +38,7 @@ export const signinUser = async (credentials) => {
     return json;
 };
 
-export const logout = async () => {
+export const logout = async () => { 
     const response = await fetch(`${API_ROOT}/users/logout`, {
         method: 'POST',
         headers: {
@@ -164,9 +164,9 @@ export const amendCart = async (details) => {
     return json;
 };
 
-export const deleteProduct = async(product) => {
+export const deleteProduct = async (id) => {
 
-    const response = await fetch (`${API_ROOT}/cart/item/${product}`, {
+    const response = await fetch (`${API_ROOT}/cart/item/${id}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
@@ -244,7 +244,7 @@ export const newAddress = async (address) => {
 export const editAddress = async (address) => {
     const {address_line_1, address_line_2, city, county, post_code} = address;
 
-    const response = await fetch (`${API_ROOT}/users/details/address`, {
+    const response = await fetch (`${API_ROOT}/users/details/address`, { //pass address id
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -254,7 +254,7 @@ export const editAddress = async (address) => {
             address_line_2,
             city,
             county,
-            post_code
+            post_code //no id?
         }),
         credentials: 'include',
     });
@@ -263,7 +263,7 @@ export const editAddress = async (address) => {
     return json;
 };
 
-export const userOrders = async (id) => {
+export const userOrders = async (id) => {//just make sure reading the name and the id params makes sense
     const response = await fetch(`${API_ROOT}/users/orders/${id}`, {
         method: 'GET',
         headers: {
@@ -289,7 +289,7 @@ export const orderById = async (id) => {
     return json;
 };
 
-export const dispatchCheckout = async (details) => {
+export const dispatchCheckout = async (details) => { //maybe change the language to something more universally understood e.g. checkout or createCheckout
     const {shippingAddress, billingAddress, cartId} = details;
 
     const response = await fetch(`${API_ROOT}/cart/checkout`, {
@@ -308,9 +308,9 @@ export const dispatchCheckout = async (details) => {
     return json;
 };
 
-export const checkoutUpdate = async (session_id) => {
+export const checkoutUpdate = async (session_id) => { //updateCheckout
 
-    const response = await fetch(`${API_ROOT}/cart/checkout`, {
+    const response = await fetch(`${API_ROOT}/cart/checkout`, {//pass id
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

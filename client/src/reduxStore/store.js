@@ -21,29 +21,3 @@ export const store = configureStore({
 });
 
 
-// export const persistor = persistStore(store);
-
-// const authPersistConfig = {
-//     key: 'auth',
-//     storage,
-// };
-
-// const rootReducers = combineReducers({
-//    auth: persistReducer(authPersistConfig, authSlice),
-//    products: productSlice,
-//    cart: cartSlice,
-//    user: userSlice,
-//    orders: ordersSlice,
-// })
-
-
-// import { persistStore,
-//     persistReducer,
-//     FLUSH,
-//     REHYDRATE,
-//     PAUSE,
-//     PERSIST,
-//     PURGE,
-//     REGISTER, } from 'redux-persist';
-// import storage from "redux-persist/lib/storage";
-

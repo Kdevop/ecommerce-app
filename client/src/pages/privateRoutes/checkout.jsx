@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Paper } from '@mui/material';
 import Styles from './checkout.module.css';
-import ReplyIcon from '@mui/icons-material/Reply';
 import Cart from '../privateRoutes/cart';
 import { userAuthDone } from '../../reduxStore/authSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { userDetails, addressData, addressReturned, userError } from '../../reduxStore/userSlice';
 import { cartData } from '../../reduxStore/cartSlice';
 import Address from '../../components/address/address';
 import { Button } from '@mui/material';
 import { dispatchCheckout } from '../../apis/apiRequest';
-import Footer from '../../components/footer/footer';
 
 function Checkout() {
     const [open, setOpen] = useState(false)
@@ -21,7 +19,6 @@ function Checkout() {
     const userErrorCheck = useSelector(userError);
     const cart = useSelector(cartData);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
@@ -42,9 +39,6 @@ function Checkout() {
         const billingAddress = dataforAddress.id;
         const cartId = cart.data[0].id;
 
-        console.log(shippingAddress);
-        console.log(billingAddress);
-        console.log(cartId);
 
         const details = {
             shippingAddress: shippingAddress,
@@ -56,8 +50,6 @@ function Checkout() {
 
         try {
             const checkingout = await dispatchCheckout(details);
-
-            console.log('Ere is the response from checking out: ', checkingout);
 
             if(checkingout.success) {
                window.location.href = checkingout.url;

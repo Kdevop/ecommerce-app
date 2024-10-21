@@ -5,11 +5,23 @@
 .container {
     display: flex;
     justify-content: space-between;
-} 
+    margin: 2rem;
+}
 
 .ordersContainer {
     display: flex;
     gap: 20px;
     justify-content: space-around;
     flex-wrap: wrap;
+    padding: 5px;
+}
+
+.btmContainer {
+    margin-top: 17.5px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    padding: 5rem;
+    text-align: center;
 }

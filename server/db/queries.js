@@ -124,7 +124,6 @@ class Queries {
 
             //you might need more work here, because you will want the products and for those you need to get to cart_products
             const checkout = await pool.query('SELECT * FROM orders INNER JOIN checkout ON orders.checkout_id = checkout.id INNER JOIN shipping_address ON checkout.shipping_address_id = shipping_address.id WHERE orders.id = $1', [orderId]);
-            console.log(checkout);
 
             const cartId = checkout.rows[0].cart_id;
 
@@ -161,9 +160,6 @@ class Queries {
 
     async updateUserDetails(changes, userId) {
         const { email, password, firstName, lastName } = changes;
-
-        const user = userId;
-        console.log(user);
 
         console.log('this is the changes object in updateUserDetails', changes);
         console.log(firstName);
@@ -224,8 +220,6 @@ class Queries {
         const user = userId;
         const { address_line_1, address_line_2, city, county, post_code } = newAddress;
 
-        console.log('This is the address in queries', newAddress);
-
         if (!address_line_1 || !address_line_2 || !city || !county || !post_code) {
             return { error: true, message: "All fields are required - failed at db.queries." };
         }
@@ -280,8 +274,6 @@ class Queries {
     }
 
     async initCart(userId) {
-
-        //const userId = this.schema.customerId;
 
         try {
             const cartExistQuery = `SELECT * FROM cart WHERE user_id = $1 AND open = $2`;
@@ -466,13 +458,9 @@ class Queries {
             console.error('Unable to process at query.', error);
             return { error: true, message: 'Unable to process at query.' };
         }
-
-        //further details on processing payment to be added once I have handled the front end. I will need to do an insert statement into orders once complete. 
     };
 
     async dataForStripe(stripe) {
-        //in here i need to get the ID, prince and name from the products table. The price will need to be turned into pense and have the $ removed. 
-        // then need to get the product ID and the quantity from the user cart_products data. 
 
         const { cartId, userId } = stripe;
 

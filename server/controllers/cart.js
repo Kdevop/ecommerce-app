@@ -150,8 +150,6 @@ const updateCheckout = async (req, res) => {
     try {
         const stripeSession = await paymentObject(payment_session);
 
-        console.log('this is the stripe session: ', stripeSession);
-
         const payment_status = stripeSession.session.payment_status;
         const checkout_ref = stripeSession.session.client_reference_id;
         const stripe_status = stripeSession.session.status;
@@ -170,17 +168,11 @@ const updateCheckout = async (req, res) => {
                 const order_date = result.data.checkout_date;
                 const checkout_id = result.data.id;
 
-                console.log(result.data)
-
-                console.log('Here is the order date: ', order_date);
-
                 const orders = await cartQueries.updateOrders(userId, order_date, checkout_id);
 
                 if (orders.error) {
                     return res.status(400).json({ success: false, message: orders.message });
                 } else {
-                    //return res.status(200).json({ success: true, message: orders.message });
-                    console.log('here is the data from orders: ', orders.data);
 
                     try {
                         const cartId = result.data.cart_id;
@@ -198,11 +190,6 @@ const updateCheckout = async (req, res) => {
                 }
             }
         }
-
-        // console.log('This is the status for updating: ', payment_status);
-        // console.log('This is the checkout table ref: ', checkout_ref);
-        // console.log('This is stripes status: ', stripe_status);
-
 
     } catch (error) {
         console.error('Error at route: ', error);

@@ -1,12 +1,11 @@
 //Imports of react methods
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
 
 //Imports of components
 import { logoutUser, userAuthDone } from '../../reduxStore/authSlice';
-
 
 
 function Logout() {

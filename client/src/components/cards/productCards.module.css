@@ -8,7 +8,6 @@
 }
 
 .container{
-    
     text-decoration: none;
 }
 
@@ -21,6 +20,22 @@
     text-decoration: none;
     color: black;
     padding: 1rem;
+}
+
+
+@media only screen and (max-width: 1000px) {
+    .detailscontainer h3, h4 {
+        margin: 0;
+    }
+
+    .detailscontainer h3 {
+        font-size: 16px;
+    }
+
+    .detailscontainer h4 {
+        font-size: 14px;
+    }
+
 }
 
 

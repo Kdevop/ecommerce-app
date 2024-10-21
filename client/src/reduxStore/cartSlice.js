@@ -52,10 +52,10 @@ export const updateCart = createAsyncThunk('cart/updateCart', async (details, {r
     }
 });
 
-export const deleteItem = createAsyncThunk('cart/deleteItem', async (product, {rejectWithValue}) => {
+export const deleteItem = createAsyncThunk('cart/deleteItem', async (id, {rejectWithValue}) => {
 
     try {
-        const response = await deleteProduct(product);
+        const response = await deleteProduct(id);
         
         if(!response.success) {
             console.warn(`Unable to delete product due to: ${response.message}`);

@@ -32,3 +32,21 @@
 .button:hover {
     background-color: #1BBD7E;
 }   
+
+@media only screen and (max-width: 1000px) {
+    .button {
+        line-height: 0;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .button {
+        font-size: 20px;
+    }   
+}
+
+@media only screen and (max-width: 650px) {
+    .container {
+        grid-template-columns: none;
+    }
+}

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styles from './accountMenu.module.css';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-
+import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { userAuthDone } from '../../reduxStore/authSlice';
 
-function AccountMenu() {
-    const location = useLocation();
-    const dispatch = useDispatch();
+function AccountMenu(props) {
+    const { onLogin, onReg } = props;
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -15,7 +13,7 @@ function AccountMenu() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            setIsLoggedIn(true);  
+            setIsLoggedIn(true);
         } else {
             setIsLoggedIn(false);
         }
@@ -24,10 +22,10 @@ function AccountMenu() {
     return (
         <div>
             {!isLoggedIn ? (
-                <ul className={styles.register}>
-                    <li ><NavLink className={styles.options} to='/register'>Register</NavLink></li>
-                    <li ><NavLink className={styles.options} to='/login'>Login</NavLink></li>
-                </ul>
+                <div className={styles.container}>
+                    <button onClick={onReg}>Register</button>
+                    <button onClick={onLogin}>Login</button>
+                </div>
             ) : (
                 <ul className={styles.register}>
                     <li ><NavLink to='/account'>Account Details</NavLink></li>

@@ -2,9 +2,7 @@ import './App.css';
 import { RouterProvider, Route, createBrowserRouter, createRoutesFromElements, } from 'react-router-dom';
 import Root from './root/root';
 import Home from './pages/publicRoutes/home';
-import Login from './pages/publicRoutes/login';
 import ProductDetails from '../src/pages/publicRoutes/productDetails';
-import Registration from '../src/pages/publicRoutes/registration';
 import Account from './pages/privateRoutes/accountPage';
 import Checkout from './pages/privateRoutes/checkout';
 import Orders from './pages/privateRoutes/orders';
@@ -22,9 +20,7 @@ const appRouter=createBrowserRouter(createRoutesFromElements(
   <Route path='/' element={<Root />}>
     {/* Public Routes */}
     <Route index element={<Home />} />
-    <Route path='/login' element={<Login />} />
     <Route path='/products/:id' element={<ProductDetails />} />
-    <Route path='/register' element={<Registration />} /> 
     <Route path='/logout' element={<Logout />} /> 
     {/* should the logout be a protected route? maybe. will have a think. */}
 

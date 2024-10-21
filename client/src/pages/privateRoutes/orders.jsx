@@ -31,11 +31,11 @@ function Orders() {
 
     useEffect(() => {
         if (isAuthenticated) {
-           setIsLoggedIn(true);
-           const id = user.user.id;
-           dispatch(getOrders(id));      
+            setIsLoggedIn(true);
+            const id = user.user.id;
+            dispatch(getOrders(id));
 
-        } 
+        }
     }, [dispatch, user]);
 
     if (isLoading) {
@@ -52,10 +52,18 @@ function Orders() {
                 <Paper>
                     <div className={Styles.container}>
                         <div>
-                            <p>You do not have any previous orders</p>
+                            <p>You do not have any previous orders.</p>
                         </div>
                         <div>
                             <a href='/account'>Go back!<ReplyIcon /></a>
+                        </div>
+                    </div>
+                    <div className={Styles.btmContainer}>
+                        <div>
+                            <img src='/photos/logo2.jpg' alt='Image of Logo' />
+                        </div>
+                        <div>
+                            <p>We look forward to you shopping with us!</p>
                         </div>
                     </div>
                 </Paper>

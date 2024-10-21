@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import styles from './login.module.css';
 import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import { Formik, Form, ErrorMessage } from 'formik';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { loginUser, authData, userAuthLoading, userAuthError, userAuthDone, errorData } from '../../reduxStore/authSlice';
+import { loginUser, userAuthError, userAuthDone, errorData } from '../../reduxStore/authSlice';
 import { getCart } from '../../reduxStore/cartSlice';
 
 const validationSchema = Yup.object().shape({
@@ -16,11 +16,11 @@ const validationSchema = Yup.object().shape({
     password: Yup.string().required('Password is required'),
 });
 
-function Login() {
+function Login(props) {
+    const { onLogin, onReg, showLogin } = props;
     const [showPassword, setShowPassword] = useState(false);
     const [signedIn, setSignedIn] = useState(false);
     const [error, setError] = useState(false);
-    const navigate = useNavigate();
     const dispatch = useDispatch();
     const message = useSelector(errorData);
     const signInComplete = useSelector(userAuthDone);
@@ -33,16 +33,13 @@ function Login() {
 
     const onSubmit = async (values, actions) => {
 
-        //object items in the credentials, should match the expected fields for the request body in the the server paaport.auth.
         const credentials = {
             username: values.email,
             password: values.password,
         };
 
         try {
-            const signin = await dispatch(loginUser(credentials));
-            console.log(signin);
-            console.log(signInComplete);
+            await dispatch(loginUser(credentials));
 
             await new Promise(resolve => setTimeout(resolve, 2500));
             console.log(signInComplete);
@@ -64,23 +61,24 @@ function Login() {
                               
                 dispatch(getCart());
                 
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                navigate('/');
+                await new Promise(resolve => setTimeout(resolve, 2500));
+                if(showLogin) {
+                    onLogin();
+                }
             }
     
             if (signInError) {
-                //alert(`${message}`);
                 setSignedIn(false);
                 setError(true);
-                
             }
         };
     
         fetchData();
-    }, [signInComplete, signInError, dispatch]);
+    }, [signInComplete, signInError, dispatch, onLogin, showLogin]);
 
-    const onFacebook = async () => {
-        console.log('You are trying to login with facebook');
+    const onSwitch = () => {
+        onLogin();
+        onReg();
     };
 
     return (
@@ -142,12 +140,11 @@ function Login() {
                                 </div>
                             )}
                             <div>
-                                <Typography>Don't have an account? Click here to <NavLink to='/register'>Register</NavLink></Typography>
+                                <Typography>Don't have an account? Click here to <button onClick={onSwitch}>Register</button></Typography>
                             </div>
                         </Form>
                     )}
                 </Formik>
-
             </Paper>
         </Grid>
     );

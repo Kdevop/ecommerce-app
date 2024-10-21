@@ -40,8 +40,6 @@ const registerUser = async (req, res) => {
 
         const data = await registerQueries.registerUser(userDetails);
 
-        console.log(data);
-
         if (!data.error) {
             // req.session.user = data.data.data.id;  I am not sure about this, I have set it up so you are routed to log in, if you register...
             // req.session.authenticated = true;
@@ -104,9 +102,6 @@ const getUserDetails = async (req, res) => {
 
         const userData = await userQueries.customerDetails(userId);
 
-        //remove after testing. 
-        console.log(userData)
-
         if (!userData.error) {
             res.status(200).json({ success: true, message: 'User details returned', user: userData.user, address: userData.address, userData: userData.userData, addressData: userData.addressData });
         } else {
@@ -139,14 +134,11 @@ const updateUser = async (req, res) => {
         console.error('Error updating user details: ', error);
         res.status(500).json({ success: false, message: 'Error updating user details', error: error.message });
     }
-
 }
 
 const addAddress = async (req, res) => {
     const userId = req.session.passport.user;
     const newAddress = req.body;
-
-    console.log('This is the address on line 146',  newAddress);
 
     try{
         const result = await userQueries.inputAddress( newAddress, userId );

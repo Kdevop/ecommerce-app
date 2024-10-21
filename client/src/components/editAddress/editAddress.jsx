@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Styles from '../editAddress/editAddress.module.css';
 import * as Yup from 'yup';
-import { Paper, Grid, Avatar, Button, TextField, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
-import { Formik, Form, ErrorMessage, FormikValues, FormikHelpers } from 'formik';
+import { Paper, Grid, Avatar, Button, TextField, Typography, CircularProgress } from '@mui/material';
+import { Formik, Form, ErrorMessage } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { updateAddress, updatedUser } from '../../reduxStore/userSlice';
-
 
 const validationSchema = Yup.object().shape({
     address_line_1: Yup.string().required('This feild is required.'),
@@ -17,7 +16,8 @@ const validationSchema = Yup.object().shape({
     post_code: Yup.string().required('This feild is required.'),
 });
 
-function EditAddress() {
+function EditAddress(props) {
+    const {showEdit} = props;
     const [showComplete, setShowComplete] = useState(false);
     const dispatch = useDispatch();
     const userChanged = useSelector(updatedUser);
@@ -32,20 +32,17 @@ function EditAddress() {
             post_code: values.post_code,
         };
 
-        console.log(address);
-
         try {
             const sendAddress = await dispatch(updateAddress(address));
-            await new Promise(resolve => setTimeout(resolve, 5000));
+            await new Promise(resolve => setTimeout(resolve, 2500));
             console.log(sendAddress);
+            showEdit();
 
         } catch (error) {
             console.warn(error);
-            //error message to be added to form.
         }
 
         actions.resetForm();
-
     }
 
     useEffect(() => {
@@ -58,7 +55,7 @@ function EditAddress() {
         };
 
         fetchData();
-    }, []);
+    }, [navigate, userChanged]);
 
     return (
         <Grid className={Styles.registration}>
