@@ -80,8 +80,8 @@ function Checkout() {
                             dataCheck={dataCheckAddress}
                             userError={userErrorCheck}
                         />
-                        <p>Deliver to a different address? <input type='checkbox' id='myCheck' onClick={shippingAddress}/></p>
-                        <p id='text' style={openShipping}>Tough, this is not built yet, drive it round yourself!</p>
+                        {/* <p>Deliver to a different address? <input type='checkbox' id='myCheck' onClick={shippingAddress}/></p>
+                        <p id='text' style={openShipping}>TO be added.</p> */}
                     </div>
                 </div>
                 <div>
